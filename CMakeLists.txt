@@ -23,6 +23,12 @@ if(TARGET DataProducts::data_products AND NOT TARGET data_products)
   add_library(data_products ALIAS DataProducts::data_products)
 endif()
 
+if (TARGET DataProducts::data_products)
+  message(STATUS "Target DataProducts::data_products is AVAILABLE")
+else()
+  message(STATUS "Target DataProducts::data_products is NOT found")
+endif()
+
 set(CMAKE_CXX_STANDARD 17)
 
 set(CMAKE_OSX_ARCHITECTURES "arm64")
