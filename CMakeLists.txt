@@ -10,7 +10,9 @@ find_package(ROOT REQUIRED)
 include(${ROOT_USE_FILE})
 include("${ROOT_DIR}/RootMacros.cmake")
 find_package(ZLIB REQUIRED)
-find_package(nlohmann_json REQUIRED)
+if(NOT TARGET nlohmann_json::nlohmann_json)
+  find_package(nlohmann_json REQUIRED)
+endif()
 
 # Custom dependencies
 # If the data_products target is already defined (e.g. by CPM), just use it
