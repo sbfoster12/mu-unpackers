@@ -18,8 +18,6 @@ add_library(unpackers SHARED
 # Make an alias for the unpackers library
 add_library(Unpackers::unpackers ALIAS unpackers)
 
-set_target_properties(unpackers PROPERTIES EXPORT_LINK_INTERFACE_LIBRARIES NO)
-
 # Include directories
 target_include_directories(unpackers
     PUBLIC
