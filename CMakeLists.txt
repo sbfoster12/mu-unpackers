@@ -12,22 +12,10 @@ include("${ROOT_DIR}/RootMacros.cmake")
 find_package(ZLIB REQUIRED)
 find_package(nlohmann_json REQUIRED)
 
-
-if (TARGET data_products)
-  message(STATUS "Target data_products is AVAILABLE")
-else()
-  message(STATUS "Target data_products is NOT found")
-endif()
-
 # Custom dependencies
 # If the data_products target is already defined (e.g. by CPM), just use it
 if(NOT TARGET DataProducts::data_products AND NOT TARGET data_products)
   find_package(DataProducts REQUIRED)
-endif()
-
-# Create alias if needed
-if(TARGET DataProducts::data_products AND NOT TARGET data_products)
-  add_library(data_products ALIAS DataProducts::data_products)
 endif()
 
 set(CMAKE_CXX_STANDARD 17)
