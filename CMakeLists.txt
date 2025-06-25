@@ -13,9 +13,8 @@ find_package(ZLIB REQUIRED)
 find_package(nlohmann_json REQUIRED)
 
 # Custom dependencies
-find_package(DataProducts REQUIRED)
 # If the data_products target is already defined (e.g. by CPM), just use it
-if(NOT TARGET data_products AND NOT TARGET DataProducts::data_products)
+if(NOT TARGET DataProducts::data_products)
     find_package(DataProducts REQUIRED)
 endif()
 
