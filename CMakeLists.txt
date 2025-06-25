@@ -36,10 +36,7 @@ add_executable(unpack src/main.cc)
 
 # Link libraries
 target_link_libraries(unpack
-    PRIVATE 
-        ${ROOT_LIBRARIES}
-        nlohmann_json::nlohmann_json
-        DataProducts::data_products
+    PUBLIC 
         unpackers 
 )
 

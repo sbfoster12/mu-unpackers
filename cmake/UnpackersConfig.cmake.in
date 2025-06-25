@@ -1,4 +1,9 @@
 @PACKAGE_INIT@
 
-include("${CMAKE_CURRENT_LIST_DIR}/UnpackersTarget.cmake")
+include(CMakeFindDependencyMacro)
+
+include("${CMAKE_CURRENT_LIST_DIR}/UnpackersTargets.cmake")
 message(STATUS "Found Unpackers: ${CMAKE_CURRENT_LIST_DIR}/UnpackersConfig.cmake")
+
+# Declare dependencies
+find_dependency(nlohmann_json REQUIRED)

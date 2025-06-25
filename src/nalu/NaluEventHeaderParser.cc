@@ -17,13 +17,13 @@ NaluEventHeaderParser::NaluEventHeaderParser() : Parser() {
     //Now look for a configuration file and use that
 
     // Get the path to the data configuration file
-    // First get the unpacker path
-    const char* unpacker_path = std::getenv("UNPACKER_PATH");
-    if (!unpacker_path) {
-        utils::LoggerHolder::getInstance().WarningLogger << "In " << className_ << " UNPACKER_PATH not set! Using default values for data location instead." << std::endl;;
+    // First get the unpackers path
+    const char* unpackers_path = std::getenv("UNPACKERS_PATH");
+    if (!unpackers_path) {
+        utils::LoggerHolder::getInstance().WarningLogger << "In " << className_ << " UNPACKERS_PATH not set! Using default values for data location instead." << std::endl;;
     } else {
 
-        std::string base_path(unpacker_path);
+        std::string base_path(unpackers_path);
         std::string file_name = "config/nalu_data_config.json";
 
         // Make sure base_path ends with a slash '/' or add one
