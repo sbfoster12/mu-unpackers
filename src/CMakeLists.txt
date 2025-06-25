@@ -72,6 +72,7 @@ install(DIRECTORY ${PROJECT_SOURCE_DIR}/midasio/
 
 # Export
 install(EXPORT UnpackersTargets
+  EXPORT_LINK_INTERFACE_LIBRARIES NO
   FILE UnpackersTargets.cmake
   NAMESPACE Unpackers::
   DESTINATION lib/cmake/Unpackers
