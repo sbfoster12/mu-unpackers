@@ -1,0 +1,4 @@
+@PACKAGE_INIT@
+
+include("${CMAKE_CURRENT_LIST_DIR}/UnpackersTarget.cmake")
+message(STATUS "Found Unpackers: ${CMAKE_CURRENT_LIST_DIR}/UnpackersConfig.cmake")
