@@ -15,6 +15,9 @@ add_library(unpackers SHARED
   ${UNPACKER_SOURCES}
 )
 
+# Make an alias for the unpackers library
+add_library(Unpackers::unpackers ALIAS unpackers)
+
 # Include directories
 target_include_directories(unpackers
     PUBLIC
