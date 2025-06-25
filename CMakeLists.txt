@@ -14,6 +14,10 @@ find_package(nlohmann_json REQUIRED)
 
 # Custom dependencies
 find_package(DataProducts REQUIRED)
+# If the data_products target is already defined (e.g. by CPM), just use it
+if(NOT TARGET data_products AND NOT TARGET DataProducts::data_products)
+    find_package(DataProducts REQUIRED)
+endif()
 
 set(CMAKE_CXX_STANDARD 17)
 
