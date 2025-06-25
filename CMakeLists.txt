@@ -13,10 +13,10 @@ find_package(ZLIB REQUIRED)
 find_package(nlohmann_json REQUIRED)
 
 
-if (TARGET DataProducts::data_products)
-  message(STATUS "Target DataProducts::data_products is AVAILABLE")
+if (TARGET data_products)
+  message(STATUS "Target data_products is AVAILABLE")
 else()
-  message(STATUS "Target DataProducts::data_products is NOT found")
+  message(STATUS "Target data_products is NOT found")
 endif()
 
 # Custom dependencies
