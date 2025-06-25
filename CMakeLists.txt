@@ -26,7 +26,7 @@ set(CMAKE_OSX_ARCHITECTURES "arm64")
 
 # Create installation directories
 if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
-    set(CMAKE_INSTALL_PREFIX "${CMAKE_SOURCE_DIR}/install")
+    set(CMAKE_INSTALL_PREFIX "${CMAKE_SOURCE_DIR}/install" CACHE PATH "Install path prefix" FORCE)
 endif()
 
 # Set the path for where to look for the libraries of the installed target

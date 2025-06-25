@@ -2,6 +2,7 @@
 
 # Get absolute path to the root of the repo (assuming this script is in scripts/)
 export UNPACKERS_PATH="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+export UNPACKERS_CMAKE_PREFIX_PATH="$UNPACKERS_PATH/install"
 
 # Function to remove a path from an environment variable
 remove_from_path() {
@@ -25,6 +26,7 @@ remove_from_path() {
 remove_from_path "ROOT_INCLUDE_PATH" "$UNPACKERS_PATH/install/include"
 remove_from_path "LD_LIBRARY_PATH" "$UNPACKERS_PATH/install/lib"
 remove_from_path "DYLD_LIBRARY_PATH" "$UNPACKERS_PATH/install/lib"
+remove_from_path "CMAKE_PREFIX_PATH" "$UNPACKERS_CMAKE_PREFIX_PATH"
 
 # Remove nlohmann_json paths if they were added
 NLOHMANN_PATHS=$(pkg-config --cflags nlohmann_json 2>/dev/null | sed 's/-I//g')
@@ -38,3 +40,4 @@ echo "Environment paths removed for $UNPACKERS_PATH"
 
 # Finally unset the UNPACKERS_PATH variable itself
 unset UNPACKERS_PATH
+unset UNPACKERS_CMAKE_PREFIX_PATH
