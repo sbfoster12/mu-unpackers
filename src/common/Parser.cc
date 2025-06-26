@@ -1,6 +1,6 @@
 #include "unpackers/common/Parser.hh"
 
-using namespace parsers;
+using namespace unpackers::common;
 
 Parser::Parser()
     : words_({})

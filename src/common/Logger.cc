@@ -1,6 +1,6 @@
 #include "unpackers/common/Logger.hh"
 
-using namespace utils;
+using namespace unpackers::common;
 
 //LOGGER
 

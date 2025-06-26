@@ -6,7 +6,7 @@
 #include <sstream>
 #include <string>
 
-namespace utils {
+namespace unpackers::common {
 
     class Logger {
         public:
@@ -61,9 +61,9 @@ namespace utils {
             void SetVerbosity(int verbosity);
 
             // The loggers
-            utils::Logger InfoLogger;
-            utils::Logger DebugLogger;
-            utils::Logger WarningLogger;
+            Logger InfoLogger;
+            Logger DebugLogger;
+            Logger WarningLogger;
 
         private:
             // Private constructor to prevent direct instantiation
@@ -75,7 +75,7 @@ namespace utils {
                 {}
 
             // Private static instance
-            static utils::LoggerHolder instance_;
+            static LoggerHolder instance_;
 
             //tree
             int verbosity_;

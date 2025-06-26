@@ -12,7 +12,7 @@
 //Custom
 #include "unpackers/common/Logger.hh"
 
-namespace parsers {
+namespace unpackers::common {
 
     // Helper methods
     inline uint64_t BitMask(int num_bytes) {

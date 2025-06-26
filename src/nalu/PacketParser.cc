@@ -1,15 +1,15 @@
-#include "unpackers/nalu/NaluPacketParser.hh"
+#include "unpackers/nalu/PacketParser.hh"
 
-using namespace parsers;
+using namespace unpackers::nalu;
 
-NaluPacketParser::NaluPacketParser() : Parser() {};
+PacketParser::PacketParser() : unpackers::common::Parser() {};
 
-NaluPacketParser::~NaluPacketParser() {};
+PacketParser::~PacketParser() {};
 
 // Method to create the data product
-dataProducts::NaluPacket
-NaluPacketParser::NewDataProduct(uint64_t channel_num, uint64_t window_position) {
-    return dataProducts::NaluPacket(
+data_products::nalu::Packet
+PacketParser::NewDataProduct(uint64_t channel_num, uint64_t window_position) {
+    return data_products::nalu::Packet(
                 channel_num,
                 window_position,
                 GetTrace()
@@ -17,7 +17,7 @@ NaluPacketParser::NewDataProduct(uint64_t channel_num, uint64_t window_position)
 }
 
 //Get methods
-std::vector<short> NaluPacketParser::GetTrace() const { 
+std::vector<short> PacketParser::GetTrace() const { 
 
     // Initialize the trace
     std::vector<short> trace = {};
@@ -45,14 +45,14 @@ std::vector<short> NaluPacketParser::GetTrace() const {
     return trace;
 }
 
-std::ostringstream NaluPacketParser::Stream() {
+std::ostringstream PacketParser::Stream() {
     std::ostringstream oss;
-    oss << "    ---> Entering NaluPacket: "<< std::endl;
+    oss << "    ---> Entering Packet: "<< std::endl;
     oss << "            Trace size: " << GetTrace().size() << std::endl;
     return oss;
 }
 
-void NaluPacketParser::Print() {
+void PacketParser::Print() {
     std::cout << this->Stream().str();
 
 }

@@ -10,9 +10,9 @@
 #define AD_BANK_ID 0
 #define AT_BANK_ID 1
     
-namespace unpackers {
+namespace unpackers::nalu {
 
-    class NaluEventUnpacker : public EventUnpacker {
+    class NaluEventUnpacker : public unpackers::common::EventUnpacker {
         
     public:
         

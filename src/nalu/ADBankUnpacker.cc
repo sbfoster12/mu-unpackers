@@ -1,14 +1,15 @@
 #include "unpackers/nalu/ADBankUnpacker.hh"
 
-using namespace unpackers;
+using namespace unpackers::nalu;
+using unpackers::common::LoggerHolder;
 
 ADBankUnpacker::ADBankUnpacker() :
-    BankUnpacker(),
+    unpackers::common::BankUnpacker(),
     className_("ADBankUnpacker")
 {
-    utils::LoggerHolder::getInstance().InfoLogger << "We are constructing the " << className_ << std::endl;
+    LoggerHolder::getInstance().InfoLogger << "We are constructing the " << className_ << std::endl;
 
-    payloadUnpackers_[AD_PAYLOAD_ID] = this->MakeAndRegister<unpackers::ADPayloadUnpacker>();
+    payloadUnpackers_[AD_PAYLOAD_ID] = this->MakeAndRegister<ADPayloadUnpacker>();
 
 }
 
@@ -51,7 +52,7 @@ int ADBankUnpacker::UnpackBank(TMEvent* event, const std::string& bankName) {
         uint64_t* bankData = reinterpret_cast<uint64_t*>(event->GetBankData(bank));
         return this->UnpackBank(bankData, totalWords, event->serial_number, std::stoi(bank->name.substr(3, 4)));
     } else {
-        utils::LoggerHolder::getInstance().InfoLogger <<"  No AD bank in event ID: " <<  event->event_id << " SN: " << event->serial_number << std::endl;
+        LoggerHolder::getInstance().InfoLogger <<"  No AD bank in event ID: " <<  event->event_id << " SN: " << event->serial_number << std::endl;
         return UNPACKING_FAILURE;
     }
 }

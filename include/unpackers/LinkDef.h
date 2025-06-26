@@ -4,13 +4,22 @@
 #pragma link off all classes;
 #pragma link off all functions;
 
+// Common unpackers classes
 #pragma link C++ namespace unpackers+;
-#pragma link C++ class unpackers::CollectionsHolder+;
-#pragma link C++ class unpackers::EventUnpacker+;
-#pragma link C++ class unpackers::BankUnpacker+;
-#pragma link C++ class unpackers::PayloadUnpacker+;
-#pragma link C++ class unpackers::ADBankUnpacker+;
-#pragma link C++ class unpackers::ATBankUnpacker+;
-#pragma link C++ class unpackers::NaluEventUnpacker+;
+#pragma link C++ class unpackers::common::CollectionsHolder+;
+#pragma link C++ class unpackers::common::EventUnpacker+;
+#pragma link C++ class unpackers::common::BankUnpacker+;
+#pragma link C++ class unpackers::common::PayloadUnpacker+;
+
+// // WFD5 unpackers classes
+// #pragma link C++ class unpackers::CRBankUnpacker+;
+// #pragma link C++ class unpackers::WFD5Unpacker+;
+// #pragma link C++ class unpackers::FC7Unpacker+;
+// #pragma link C++ class unpackers::WFD5EventUnpacker+;
+
+// Nalu unpackers classes
+#pragma link C++ class unpackers::nalu::ADBankUnpacker+;
+#pragma link C++ class unpackers::nalu::ATBankUnpacker+;
+#pragma link C++ class unpackers::nalu::NaluEventUnpacker+;
 
 #endif

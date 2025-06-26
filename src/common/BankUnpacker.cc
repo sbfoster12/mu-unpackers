@@ -1,6 +1,6 @@
 #include "unpackers/common/BankUnpacker.hh"
 
-using namespace unpackers;
+using namespace unpackers::common;
 
 BankUnpacker::BankUnpacker() :
     CollectionsHolder(),

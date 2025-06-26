@@ -1,5 +1,5 @@
-#ifndef ADBANKUNPACKER_HH
-#define ADBANKUNPACKER_HH
+#ifndef NALU_ADBANKUNPACKER_HH
+#define NALU_ADBANKUNPACKER_HH
 
 //Custom
 #include "unpackers/common/Logger.hh"
@@ -9,9 +9,9 @@
 
 #define AD_PAYLOAD_ID 0
 
-namespace unpackers {
+namespace unpackers::nalu {
 
-    class ADBankUnpacker : public BankUnpacker {
+    class ADBankUnpacker : public unpackers::common::BankUnpacker {
         
     public:
         
@@ -38,4 +38,4 @@ namespace unpackers {
 
 }
 
-#endif // ADBANKUNPACKER_HH
+#endif // NALU_ADBANKUNPACKER_HH

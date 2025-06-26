@@ -1,6 +1,6 @@
 #include "unpackers/common/EventUnpacker.hh"
 
-using namespace unpackers;
+using namespace unpackers::common;
 
 EventUnpacker::EventUnpacker()
     : CollectionsHolder(),

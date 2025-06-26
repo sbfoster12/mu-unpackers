@@ -1,36 +1,38 @@
 #include "unpackers/nalu/ADPayloadUnpacker.hh"
 
-using namespace unpackers;
+using namespace unpackers::nalu;
+using unpackers::common::LoggerHolder;
+
 
 ADPayloadUnpacker::ADPayloadUnpacker() 
-    : PayloadUnpacker()
-    , naluEventHeaderPtrCol_(std::make_shared<dataProducts::DataProductPtrCollection>())
-    , naluPacketHeaderPtrCol_(std::make_shared<dataProducts::DataProductPtrCollection>())
-    , naluPacketFooterPtrCol_(std::make_shared<dataProducts::DataProductPtrCollection>())
-    , naluWaveformPtrCol_(std::make_shared<dataProducts::DataProductPtrCollection>())
-    , naluEventFooterPtrCol_(std::make_shared<dataProducts::DataProductPtrCollection>())
-    , naluEventHeaderParser_(std::make_unique<parsers::NaluEventHeaderParser>())
-    , naluPacketHeaderParser_(std::make_unique<parsers::NaluPacketHeaderParser>())
-    , naluPacketParser_(std::make_unique<parsers::NaluPacketParser>())
-    , naluPacketFooterParser_(std::make_unique<parsers::NaluPacketFooterParser>())
-    , naluEventFooterParser_(std::make_unique<parsers::NaluEventFooterParser>())
+    : unpackers::common::PayloadUnpacker()
+    , eventHeaderPtrCol_(std::make_shared<data_products::common::DataProductPtrCollection>())
+    , packetHeaderPtrCol_(std::make_shared<data_products::common::DataProductPtrCollection>())
+    , packetFooterPtrCol_(std::make_shared<data_products::common::DataProductPtrCollection>())
+    , waveformPtrCol_(std::make_shared<data_products::common::DataProductPtrCollection>())
+    , eventFooterPtrCol_(std::make_shared<data_products::common::DataProductPtrCollection>())
+    , eventHeaderParser_(std::make_unique<EventHeaderParser>())
+    , packetHeaderParser_(std::make_unique<PacketHeaderParser>())
+    , packetParser_(std::make_unique<PacketParser>())
+    , packetFooterParser_(std::make_unique<PacketFooterParser>())
+    , eventFooterParser_(std::make_unique<EventFooterParser>())
 
 {
-    utils::LoggerHolder::getInstance().InfoLogger << "We are constructing the " << className_ << std::endl;
+    LoggerHolder::getInstance().InfoLogger << "We are constructing the " << className_ << std::endl;
 
     //Register the collections
-    this->RegisterCollection("NaluEventHeaderCollection",naluEventHeaderPtrCol_);
-    this->RegisterCollection("NaluPacketHeaderCollection",naluPacketHeaderPtrCol_);
-    this->RegisterCollection("NaluPacketFooterCollection",naluPacketFooterPtrCol_);
-    this->RegisterCollection("NaluWaveformCollection",naluWaveformPtrCol_);
-    this->RegisterCollection("NaluEventFooterCollection",naluEventFooterPtrCol_);
+    this->RegisterCollection("EventHeaderCollection",eventHeaderPtrCol_);
+    this->RegisterCollection("PacketHeaderCollection",packetHeaderPtrCol_);
+    this->RegisterCollection("PacketFooterCollection",packetFooterPtrCol_);
+    this->RegisterCollection("WaveformCollection",waveformPtrCol_);
+    this->RegisterCollection("EventFooterCollection",eventFooterPtrCol_);
 
 }
 
 ADPayloadUnpacker::~ADPayloadUnpacker() {};
 
 int ADPayloadUnpacker::Unpack(const uint64_t* words, unsigned int& wordNum) {
-    utils::LoggerHolder::getInstance().InfoLogger << "  We are unpacking an AD payload." << std::endl;
+    LoggerHolder::getInstance().InfoLogger << "  We are unpacking an AD payload." << std::endl;
 
     // Store the starting word for comparison at the end
     unsigned int startWordNum = wordNum;
@@ -39,27 +41,27 @@ int ADPayloadUnpacker::Unpack(const uint64_t* words, unsigned int& wordNum) {
 
     // Get the event header, which is 3 64 bit words long
 
-    std::vector<uint64_t> header_words = unpackers::GetXWords(words,wordNum,3,"le");
+    std::vector<uint64_t> header_words = unpackers::common::GetXWords(words,wordNum,3,"le");
     // for (int i = 0; i < header_words.size(); ++i)
     // {
     //     std::cout << std::hex << std::setw(16) << std::setfill('0') << header_words.at(i) << std::endl;
     // }
 
-    naluEventHeaderParser_->SetWords(header_words);
-    utils::LoggerHolder::getInstance().DebugLogger << naluEventHeaderParser_->Stream().str() << std::endl;
+    eventHeaderParser_->SetWords(header_words);
+    LoggerHolder::getInstance().DebugLogger << eventHeaderParser_->Stream().str() << std::endl;
 
     //Create the data product
-    naluEventHeaderPtrCol_->push_back(naluEventHeaderParser_->NewDataProduct());
+    eventHeaderPtrCol_->push_back(eventHeaderParser_->NewDataProduct());
 
     // Get the event index and other information
-    int event_index = naluEventHeaderParser_->GetEventIndex();
-    int num_packets = naluEventHeaderParser_->GetNumPackets();
-    int num_windows = naluEventHeaderParser_->GetNumWindows();
+    int event_index = eventHeaderParser_->GetEventIndex();
+    int num_packets = eventHeaderParser_->GetNumPackets();
+    int num_windows = eventHeaderParser_->GetNumWindows();
 
     // We are now going to loop over the packets, but we need to figure out which packet goes to which channel and the order of the packets
 
     // Collection of nalu packets, grouped by channel number
-    std::map<int,dataProducts::NaluPacketCollection> channel_to_packets_map = {};
+    std::map<int,data_products::nalu::PacketCollection> channel_to_packets_map = {};
 
     // Loop over each packet to parse and store the data
     for (int i_packet = 0; i_packet < num_packets; ++i_packet)
@@ -67,33 +69,33 @@ int ADPayloadUnpacker::Unpack(const uint64_t* words, unsigned int& wordNum) {
         // --- HEADER ---
 
         // Extract 2 64-bit words for the packet header (little-endian)
-        std::vector<uint64_t> packet_header_words = unpackers::GetXWords(words, wordNum, 2, "le");
+        std::vector<uint64_t> packet_header_words = unpackers::common::GetXWords(words, wordNum, 2, "le");
 
         // Adjust word index because the last header word also contains sample data
         wordNum--;
 
         // Pass the header words to the header parser
-        naluPacketHeaderParser_->SetWords(packet_header_words);
-        utils::LoggerHolder::getInstance().DebugLogger << naluPacketHeaderParser_->Stream().str()  << std::endl;
+        packetHeaderParser_->SetWords(packet_header_words);
+        LoggerHolder::getInstance().DebugLogger << packetHeaderParser_->Stream().str()  << std::endl;
 
         // Create and store the header data product
-        naluPacketHeaderPtrCol_->push_back(naluPacketHeaderParser_->NewDataProduct());
+        packetHeaderPtrCol_->push_back(packetHeaderParser_->NewDataProduct());
 
         // Retrieve key metadata from the parsed header
-        int channel_num = naluPacketHeaderParser_->GetChannel();
-        int window_position = naluPacketHeaderParser_->GetWindowPosition();
+        int channel_num = packetHeaderParser_->GetChannel();
+        int window_position = packetHeaderParser_->GetWindowPosition();
 
         // --- SAMPLES ---
 
         // Extract 9 64-bit words containing sample data (big-endian)
-        std::vector<uint64_t> sample_words = unpackers::GetXWords(words, wordNum, 9, "bigendian");
+        std::vector<uint64_t> sample_words = unpackers::common::GetXWords(words, wordNum, 9, "bigendian");
 
         // Adjust word index because the last sample word includes the packet footer
         wordNum--;
 
         // Parse the sample data
-        naluPacketParser_->SetWords(sample_words);
-        utils::LoggerHolder::getInstance().DebugLogger << naluPacketParser_->Stream().str()  << std::endl;
+        packetParser_->SetWords(sample_words);
+        LoggerHolder::getInstance().DebugLogger << packetParser_->Stream().str()  << std::endl;
 
         // --- STORE PACKET DATA BY CHANNEL ---
 
@@ -104,20 +106,20 @@ int ADPayloadUnpacker::Unpack(const uint64_t* words, unsigned int& wordNum) {
 
         // Store the parsed packet (with channel and position metadata) into the map
         channel_to_packets_map[channel_num].push_back(
-            naluPacketParser_->NewDataProduct(channel_num, window_position)
+            packetParser_->NewDataProduct(channel_num, window_position)
         );
 
         // --- FOOTER ---
 
         // Extract 1 64-bit word for the packet footer (little-endian)
-        std::vector<uint64_t> packet_footer_words = unpackers::GetXWords(words, wordNum, 1, "le");
+        std::vector<uint64_t> packet_footer_words = unpackers::common::GetXWords(words, wordNum, 1, "le");
 
         // Parse the footer
-        naluPacketFooterParser_->SetWords(packet_footer_words);
-        utils::LoggerHolder::getInstance().DebugLogger << naluPacketFooterParser_->Stream().str() << std::endl;
+        packetFooterParser_->SetWords(packet_footer_words);
+        LoggerHolder::getInstance().DebugLogger << packetFooterParser_->Stream().str() << std::endl;
 
         // Create and store the footer data product
-        naluPacketFooterPtrCol_->push_back(naluPacketFooterParser_->NewDataProduct());
+        packetFooterPtrCol_->push_back(packetFooterParser_->NewDataProduct());
     }
 
     // Loop over the channel map to stitch together the packets
@@ -127,7 +129,7 @@ int ADPayloadUnpacker::Unpack(const uint64_t* words, unsigned int& wordNum) {
         auto packets = val.second;
 
         std::sort(packets.begin(), packets.end(),
-        [](const dataProducts::NaluPacket& a, const dataProducts::NaluPacket& b) {
+        [](const data_products::nalu::Packet& a, const data_products::nalu::Packet& b) {
             return a.window_position < b.window_position;
         });
 
@@ -145,27 +147,27 @@ int ADPayloadUnpacker::Unpack(const uint64_t* words, unsigned int& wordNum) {
         // Use pivot window to resort packets
         if (pivot_window != -1) {
             std::sort(packets.begin(), packets.end(),
-            [pivot_window](const dataProducts::NaluPacket& a, const dataProducts::NaluPacket& b) {
+            [pivot_window](const data_products::nalu::Packet& a, const data_products::nalu::Packet& b) {
                 return ((a.window_position - pivot_window) % 62) < ((b.window_position - pivot_window) % 62);
             });
         }
 
         // Now stitch together these packets to form a waveform and push to the collection
-        naluWaveformPtrCol_->push_back(std::make_unique<dataProducts::NaluWaveform>(packets));
+        waveformPtrCol_->push_back(std::make_unique<data_products::nalu::Waveform>(packets));
 
     }
 
     // Extract 1 64-bit words for the event footer (little-endian)
-    std::vector<uint64_t> footer_words = unpackers::GetXWords(words,wordNum,1,"le");
+    std::vector<uint64_t> footer_words = unpackers::common::GetXWords(words,wordNum,1,"le");
     
     // Pass the footer words to the footer parser
-    naluEventFooterParser_->SetWords(footer_words);
-    utils::LoggerHolder::getInstance().DebugLogger << naluEventFooterParser_->Stream().str()  << std::endl;
+    eventFooterParser_->SetWords(footer_words);
+    LoggerHolder::getInstance().DebugLogger << eventFooterParser_->Stream().str()  << std::endl;
 
-    uint32_t event_footer = naluEventFooterParser_->GetEventFooter();
+    uint32_t event_footer = eventFooterParser_->GetEventFooter();
 
     // Create and store the event footer data product
-    naluEventFooterPtrCol_->push_back(naluEventFooterParser_->NewDataProduct());
+    eventFooterPtrCol_->push_back(eventFooterParser_->NewDataProduct());
 
     //Check that the footer word is 0xEEEE
     if (event_footer != 0xEEEE) {
@@ -174,15 +176,15 @@ int ADPayloadUnpacker::Unpack(const uint64_t* words, unsigned int& wordNum) {
         << "Details: The footer word is " << event_footer << ", but should be 0xEEEE"<< std::endl;
         return UNPACKING_FAILURE;
     } else {
-        utils::LoggerHolder::getInstance().DebugLogger << "  Reached end of payload with footer word 0x" << std::hex << event_footer << std::endl;
+        LoggerHolder::getInstance().DebugLogger << "  Reached end of payload with footer word 0x" << std::hex << event_footer << std::endl;
     }
 
     //Clear data from parser
-    naluEventHeaderParser_->Clear();
-    naluPacketHeaderParser_->Clear();
-    naluPacketParser_->Clear();
-    naluPacketFooterParser_->Clear();
-    naluEventFooterParser_->Clear();
+    eventHeaderParser_->Clear();
+    packetHeaderParser_->Clear();
+    packetParser_->Clear();
+    packetFooterParser_->Clear();
+    eventFooterParser_->Clear();
 
     return UNPACKING_SUCCESS;
 };

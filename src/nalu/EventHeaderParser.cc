@@ -1,18 +1,19 @@
-#include "unpackers/nalu/NaluEventHeaderParser.hh"
+#include "unpackers/nalu/EventHeaderParser.hh"
 
-using namespace parsers;
+using namespace unpackers::nalu;
+using unpackers::common::LoggerHolder;
 using json = nlohmann::json;
 
-NaluEventHeaderParser::NaluEventHeaderParser() : Parser() {
+EventHeaderParser::EventHeaderParser() : unpackers::common::Parser() {
 
-    event_header_data_location_ =                         DataLocation(0,0,2);
-    event_info_data_location_ =                           DataLocation(0,16,1);
-    event_index_data_location_ =                          DataLocation(0,24,4);
-    event_reference_time_data_location_ =                 DataLocation(0,56,1,1,0,3);
-    packet_size_data_location_ =                          DataLocation(1,24,2);
-    channel_mask_data_location_ =                         DataLocation(1,40,3,2,0,5);
-    num_windows_data_location_ =                          DataLocation(2,40,1);
-    num_packets_data_location_ =                          DataLocation(2,48,2);
+    event_header_data_location_ =                         unpackers::common::DataLocation(0,0,2);
+    event_info_data_location_ =                           unpackers::common::DataLocation(0,16,1);
+    event_index_data_location_ =                          unpackers::common::DataLocation(0,24,4);
+    event_reference_time_data_location_ =                 unpackers::common::DataLocation(0,56,1,1,0,3);
+    packet_size_data_location_ =                          unpackers::common::DataLocation(1,24,2);
+    channel_mask_data_location_ =                         unpackers::common::DataLocation(1,40,3,2,0,5);
+    num_windows_data_location_ =                          unpackers::common::DataLocation(2,40,1);
+    num_packets_data_location_ =                          unpackers::common::DataLocation(2,48,2);
 
     //Now look for a configuration file and use that
 
@@ -20,7 +21,7 @@ NaluEventHeaderParser::NaluEventHeaderParser() : Parser() {
     // First get the unpackers path
     const char* unpackers_path = std::getenv("UNPACKERS_PATH");
     if (!unpackers_path) {
-        utils::LoggerHolder::getInstance().WarningLogger << "In " << className_ << " UNPACKERS_PATH not set! Using default values for data location instead." << std::endl;;
+        LoggerHolder::getInstance().WarningLogger << "In " << className_ << " UNPACKERS_PATH not set! Using default values for data location instead." << std::endl;;
     } else {
 
         std::string base_path(unpackers_path);
@@ -35,7 +36,7 @@ NaluEventHeaderParser::NaluEventHeaderParser() : Parser() {
 
         std::ifstream file(full_path);
         if (!file) { 
-            utils::LoggerHolder::getInstance().WarningLogger << "In " << className_ << " could not open config file here: " << full_path << ". Using default values for data location instead." << std::endl;
+            LoggerHolder::getInstance().WarningLogger << "In " << className_ << " could not open config file here: " << full_path << ". Using default values for data location instead." << std::endl;
         } else {
 
             // Make a json object from the input file
@@ -58,12 +59,12 @@ NaluEventHeaderParser::NaluEventHeaderParser() : Parser() {
 
 };
 
-NaluEventHeaderParser::~NaluEventHeaderParser() {};
+EventHeaderParser::~EventHeaderParser() {};
 
 // Method to create the data product
-std::unique_ptr<dataProducts::NaluEventHeader> 
-NaluEventHeaderParser::NewDataProduct() {
-    return std::make_unique<dataProducts::NaluEventHeader>(
+std::unique_ptr<data_products::nalu::EventHeader> 
+EventHeaderParser::NewDataProduct() {
+    return std::make_unique<data_products::nalu::EventHeader>(
                  GetEventHeader()
                 ,GetEventInfo()
                 ,GetEventIndex()
@@ -76,18 +77,18 @@ NaluEventHeaderParser::NewDataProduct() {
 }
 
 //Get methods
-uint16_t NaluEventHeaderParser::GetEventHeader()         const { return GetData(event_header_data_location_); }
-uint16_t NaluEventHeaderParser::GetEventInfo()           const { return GetData(event_info_data_location_); }
-uint32_t NaluEventHeaderParser::GetEventIndex()          const { return GetData(event_index_data_location_); }
-uint32_t NaluEventHeaderParser::GetEventReferenceTime()  const { return GetData(event_reference_time_data_location_); }
-uint16_t NaluEventHeaderParser::GetPacketSize()          const { return GetData(packet_size_data_location_); }
-uint64_t NaluEventHeaderParser::GetChannelMask()         const { return GetData(channel_mask_data_location_); }
-uint16_t NaluEventHeaderParser::GetNumWindows()          const { return GetData(num_windows_data_location_); }
-uint16_t NaluEventHeaderParser::GetNumPackets()          const { return GetData(num_packets_data_location_); }
+uint16_t EventHeaderParser::GetEventHeader()         const { return GetData(event_header_data_location_); }
+uint16_t EventHeaderParser::GetEventInfo()           const { return GetData(event_info_data_location_); }
+uint32_t EventHeaderParser::GetEventIndex()          const { return GetData(event_index_data_location_); }
+uint32_t EventHeaderParser::GetEventReferenceTime()  const { return GetData(event_reference_time_data_location_); }
+uint16_t EventHeaderParser::GetPacketSize()          const { return GetData(packet_size_data_location_); }
+uint64_t EventHeaderParser::GetChannelMask()         const { return GetData(channel_mask_data_location_); }
+uint16_t EventHeaderParser::GetNumWindows()          const { return GetData(num_windows_data_location_); }
+uint16_t EventHeaderParser::GetNumPackets()          const { return GetData(num_packets_data_location_); }
 
-std::ostringstream NaluEventHeaderParser::Stream() {
+std::ostringstream EventHeaderParser::Stream() {
     std::ostringstream oss;
-    oss << "    ---> Entering NaluEventHeader: " << std::endl;
+    oss << "    ---> Entering EventHeader: " << std::endl;
     oss << "            EventHeader: " << "0x" << std::hex << std::setw(4) << std::setfill('0') << GetEventHeader() << std::endl;
     oss << "            EventInfo: " << std::dec << GetEventInfo() << std::endl;
     oss << "            EventIndex: "<< std::dec << GetEventIndex() << std::endl;
@@ -99,7 +100,7 @@ std::ostringstream NaluEventHeaderParser::Stream() {
     return oss;
 }
 
-void NaluEventHeaderParser::Print() {
+void EventHeaderParser::Print() {
     std::cout << this->Stream().str();
 
 }

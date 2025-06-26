@@ -1,17 +1,18 @@
-#include "unpackers/nalu/NaluPacketHeaderParser.hh"
+#include "unpackers/nalu/PacketHeaderParser.hh"
 
-using namespace parsers;
+using namespace unpackers::nalu;
+using unpackers::common::LoggerHolder;
 using json = nlohmann::json;
 
-NaluPacketHeaderParser::NaluPacketHeaderParser() : Parser() {
+PacketHeaderParser::PacketHeaderParser() : unpackers::common::Parser() {
 
      //Set each data location to its default values
-    packet_header_data_location_ =              DataLocation(0,0,2);
-    packet_info_data_location_ =                DataLocation(0,16,1);
-    channel_data_location_ =                    DataLocation(0,24,1);
-    trigger_time_data_location_ =               DataLocation(0,32,4);
-    logical_position_data_location_ =           DataLocation(1,0,2);
-    window_position_data_location_ =            DataLocation(1,16,2);
+    packet_header_data_location_ =              unpackers::common::DataLocation(0,0,2);
+    packet_info_data_location_ =                unpackers::common::DataLocation(0,16,1);
+    channel_data_location_ =                    unpackers::common::DataLocation(0,24,1);
+    trigger_time_data_location_ =               unpackers::common::DataLocation(0,32,4);
+    logical_position_data_location_ =           unpackers::common::DataLocation(1,0,2);
+    window_position_data_location_ =            unpackers::common::DataLocation(1,16,2);
 
     //Now look for a configuration file and use that
 
@@ -19,7 +20,7 @@ NaluPacketHeaderParser::NaluPacketHeaderParser() : Parser() {
     // First get the unpackers path
     const char* unpackers_path = std::getenv("UNPACKERS_PATH");
     if (!unpackers_path) {
-        utils::LoggerHolder::getInstance().WarningLogger << "In " << className_ << " UNPACKERS_PATH not set! Using default values for data location instead." << std::endl;;
+        LoggerHolder::getInstance().WarningLogger << "In " << className_ << " UNPACKERS_PATH not set! Using default values for data location instead." << std::endl;;
     } else {
 
         std::string base_path(unpackers_path);
@@ -34,7 +35,7 @@ NaluPacketHeaderParser::NaluPacketHeaderParser() : Parser() {
 
         std::ifstream file(full_path);
         if (!file) { 
-            utils::LoggerHolder::getInstance().WarningLogger << "In " << className_ << " could not open config file here: " << full_path << ". Using default values for data location instead." << std::endl;
+            LoggerHolder::getInstance().WarningLogger << "In " << className_ << " could not open config file here: " << full_path << ". Using default values for data location instead." << std::endl;
         } else {
 
             // Make a json object from the input file
@@ -54,12 +55,12 @@ NaluPacketHeaderParser::NaluPacketHeaderParser() : Parser() {
     }
 };
 
-NaluPacketHeaderParser::~NaluPacketHeaderParser() {};
+PacketHeaderParser::~PacketHeaderParser() {};
 
 // Method to create the data product
-std::unique_ptr<dataProducts::NaluPacketHeader> 
-NaluPacketHeaderParser::NewDataProduct() {
-    return std::make_unique<dataProducts::NaluPacketHeader>(
+std::unique_ptr<data_products::nalu::PacketHeader> 
+PacketHeaderParser::NewDataProduct() {
+    return std::make_unique<data_products::nalu::PacketHeader>(
                  GetPacketHeader()
                 ,GetPacketInfo()
                 ,GetChannel()
@@ -70,16 +71,16 @@ NaluPacketHeaderParser::NewDataProduct() {
 }
 
 //Get methods
-uint16_t            NaluPacketHeaderParser::GetPacketHeader()           const { return GetData(packet_header_data_location_); }
-uint16_t            NaluPacketHeaderParser::GetPacketInfo()             const { return GetData(packet_info_data_location_); }
-uint16_t            NaluPacketHeaderParser::GetChannel()                const { return GetData(channel_data_location_); }
-uint32_t            NaluPacketHeaderParser::GetTriggerTime()            const { return GetData(trigger_time_data_location_); }
-uint16_t            NaluPacketHeaderParser::GetLogicalPosition()        const { return GetData(logical_position_data_location_); }
-uint16_t            NaluPacketHeaderParser::GetWindowPosition()         const { return GetData(window_position_data_location_); }
+uint16_t            PacketHeaderParser::GetPacketHeader()           const { return GetData(packet_header_data_location_); }
+uint16_t            PacketHeaderParser::GetPacketInfo()             const { return GetData(packet_info_data_location_); }
+uint16_t            PacketHeaderParser::GetChannel()                const { return GetData(channel_data_location_); }
+uint32_t            PacketHeaderParser::GetTriggerTime()            const { return GetData(trigger_time_data_location_); }
+uint16_t            PacketHeaderParser::GetLogicalPosition()        const { return GetData(logical_position_data_location_); }
+uint16_t            PacketHeaderParser::GetWindowPosition()         const { return GetData(window_position_data_location_); }
 
-std::ostringstream NaluPacketHeaderParser::Stream() {
+std::ostringstream PacketHeaderParser::Stream() {
     std::ostringstream oss;
-    oss << "    ---> Entering NaluPacketHeader: " << std::endl;
+    oss << "    ---> Entering PacketHeader: " << std::endl;
     oss << "            PacketHeader: " << "0x" << std::hex << std::setw(4) << std::setfill('0') << GetPacketHeader() << std::endl;
     oss << "            PacketInfo: " << std::dec << GetPacketInfo() << std::endl;
     oss << "            Channel: " << std::dec << GetChannel() << std::endl;
@@ -89,7 +90,7 @@ std::ostringstream NaluPacketHeaderParser::Stream() {
     return oss;
 }
 
-void NaluPacketHeaderParser::Print() {
+void PacketHeaderParser::Print() {
     std::cout << this->Stream().str();
 
 }

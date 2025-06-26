@@ -11,7 +11,7 @@
 #include "unpackers/common/CollectionsHolder.hh"
 #include "unpackers/common/PayloadUnpacker.hh"
 
-namespace unpackers {
+namespace unpackers::common {
 
     class BankUnpacker : public CollectionsHolder {
         
@@ -37,7 +37,7 @@ namespace unpackers {
 
     protected:
         //unpackers
-        std::map<int,std::unique_ptr<unpackers::PayloadUnpacker>> payloadUnpackers_;
+        std::map<int,std::unique_ptr<PayloadUnpacker>> payloadUnpackers_;
 
     };
 }

@@ -11,7 +11,7 @@
 
 #define CR_BANK_ID 0
 
-namespace unpackers {
+namespace unpackers::common {
 
     class EventUnpacker : public CollectionsHolder {
         
@@ -33,7 +33,7 @@ namespace unpackers {
 
     protected:
         //bank unpackers
-        std::map<int,std::unique_ptr<unpackers::BankUnpacker>> bankUnpackers_;
+        std::map<int,std::unique_ptr<BankUnpacker>> bankUnpackers_;
 
     };
 

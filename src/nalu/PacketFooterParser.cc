@@ -1,13 +1,14 @@
-#include "unpackers/nalu/NaluPacketFooterParser.hh"
+#include "unpackers/nalu/PacketFooterParser.hh"
 
-using namespace parsers;
+using namespace unpackers::nalu;
+using unpackers::common::LoggerHolder;
 using json = nlohmann::json;
 
-NaluPacketFooterParser::NaluPacketFooterParser() : Parser() {
+PacketFooterParser::PacketFooterParser() : unpackers::common::Parser() {
 
     //Set each data location to its default values
-    parser_index_data_location_ =             DataLocation(0,32,2);
-    packet_footer_data_location_ =            DataLocation(0,48,2);
+    parser_index_data_location_ =             unpackers::common::DataLocation(0,32,2);
+    packet_footer_data_location_ =            unpackers::common::DataLocation(0,48,2);
 
     //Now look for a configuration file and use that
 
@@ -15,7 +16,7 @@ NaluPacketFooterParser::NaluPacketFooterParser() : Parser() {
     // First get the unpackers path
     const char* unpackers_path = std::getenv("UNPACKERS_PATH");
     if (!unpackers_path) {
-        utils::LoggerHolder::getInstance().WarningLogger << "In " << className_ << " UNPACKERS_PATH not set! Using default values for data location instead." << std::endl;;
+        LoggerHolder::getInstance().WarningLogger << "In " << className_ << " UNPACKERS_PATH not set! Using default values for data location instead." << std::endl;;
     } else {
 
         std::string base_path(unpackers_path);
@@ -30,7 +31,7 @@ NaluPacketFooterParser::NaluPacketFooterParser() : Parser() {
 
         std::ifstream file(full_path);
         if (!file) { 
-            utils::LoggerHolder::getInstance().WarningLogger << "In " << className_ << " could not open config file here: " << full_path << ". Using default values for data location instead." << std::endl;
+            LoggerHolder::getInstance().WarningLogger << "In " << className_ << " could not open config file here: " << full_path << ". Using default values for data location instead." << std::endl;
         } else {
 
             // Make a json object from the input file
@@ -47,30 +48,30 @@ NaluPacketFooterParser::NaluPacketFooterParser() : Parser() {
 
 }
 
-NaluPacketFooterParser::~NaluPacketFooterParser() {};
+PacketFooterParser::~PacketFooterParser() {};
 
 // Method to create the data product
-std::unique_ptr<dataProducts::NaluPacketFooter> 
-NaluPacketFooterParser::NewDataProduct() {
-    return std::make_unique<dataProducts::NaluPacketFooter>(
+std::unique_ptr<data_products::nalu::PacketFooter> 
+PacketFooterParser::NewDataProduct() {
+    return std::make_unique<data_products::nalu::PacketFooter>(
                 GetParserIndex(),
                 GetPacketFooter()
             );
 }
 
 //Get methods
-uint32_t        NaluPacketFooterParser::GetParserIndex()           const { return GetData(parser_index_data_location_); }
-uint32_t        NaluPacketFooterParser::GetPacketFooter()          const { return GetData(packet_footer_data_location_); }
+uint32_t        PacketFooterParser::GetParserIndex()           const { return GetData(parser_index_data_location_); }
+uint32_t        PacketFooterParser::GetPacketFooter()          const { return GetData(packet_footer_data_location_); }
 
-std::ostringstream NaluPacketFooterParser::Stream() {
+std::ostringstream PacketFooterParser::Stream() {
     std::ostringstream oss;
-    oss << "    ---> Entering NaluPacketFooter:" << std::endl;
+    oss << "    ---> Entering PacketFooter:" << std::endl;
     oss << "            ParserIndex: " << std::dec << GetParserIndex() << std::endl;
     oss << "            PacketFooter: " << std::hex << "0x" << GetPacketFooter() << std::endl;
     return oss;
 }
 
-void NaluPacketFooterParser::Print() {
+void PacketFooterParser::Print() {
     std::cout << this->Stream().str();
 
 }

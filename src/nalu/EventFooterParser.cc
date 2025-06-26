@@ -1,12 +1,13 @@
-#include "unpackers/nalu/NaluEventFooterParser.hh"
+#include "unpackers/nalu/EventFooterParser.hh"
 
-using namespace parsers;
+using namespace unpackers::nalu;
+using unpackers::common::LoggerHolder;
 using json = nlohmann::json;
 
-NaluEventFooterParser::NaluEventFooterParser() : Parser() {
+EventFooterParser::EventFooterParser() : unpackers::common::Parser() {
 
     //Set each data location to its default values
-    event_footer_data_location_ =             DataLocation(0,0,2);
+    event_footer_data_location_ =             unpackers::common::DataLocation(0,0,2);
 
     //Now look for a configuration file and use that
 
@@ -14,7 +15,7 @@ NaluEventFooterParser::NaluEventFooterParser() : Parser() {
     // First get the unpackers path
     const char* unpackers_path = std::getenv("UNPACKERS_PATH");
     if (!unpackers_path) {
-        utils::LoggerHolder::getInstance().WarningLogger << "In " << className_ << " UNPACKERS_PATH not set! Using default values for data location instead." << std::endl;;
+        LoggerHolder::getInstance().WarningLogger << "In " << className_ << " UNPACKERS_PATH not set! Using default values for data location instead." << std::endl;;
     } else {
 
         std::string base_path(unpackers_path);
@@ -29,7 +30,7 @@ NaluEventFooterParser::NaluEventFooterParser() : Parser() {
 
         std::ifstream file(full_path);
         if (!file) { 
-            utils::LoggerHolder::getInstance().WarningLogger << "In " << className_ << " could not open config file here: " << full_path << ". Using default values for data location instead." << std::endl;
+            LoggerHolder::getInstance().WarningLogger << "In " << className_ << " could not open config file here: " << full_path << ". Using default values for data location instead." << std::endl;
         } else {
 
             // Make a json object from the input file
@@ -45,27 +46,27 @@ NaluEventFooterParser::NaluEventFooterParser() : Parser() {
 
 };
 
-NaluEventFooterParser::~NaluEventFooterParser() {};
+EventFooterParser::~EventFooterParser() {};
 
 // Method to create the data product
-std::unique_ptr<dataProducts::NaluEventFooter> 
-NaluEventFooterParser::NewDataProduct() {
-    return std::make_unique<dataProducts::NaluEventFooter>(
+std::unique_ptr<data_products::nalu::EventFooter> 
+EventFooterParser::NewDataProduct() {
+    return std::make_unique<data_products::nalu::EventFooter>(
                 GetEventFooter()
             );
 }
 
 //Get methods
-uint32_t NaluEventFooterParser::GetEventFooter()         const { return GetData(event_footer_data_location_); }
+uint32_t EventFooterParser::GetEventFooter()         const { return GetData(event_footer_data_location_); }
 
-std::ostringstream NaluEventFooterParser::Stream() {
+std::ostringstream EventFooterParser::Stream() {
     std::ostringstream oss;
-    oss << "   ---> Entering NaluEventFooter: " << std::endl;
+    oss << "   ---> Entering EventFooter: " << std::endl;
     oss << "            EventFooter: " << std::hex << "0x" << GetEventFooter() << std::endl;
     return oss;
 }
 
-void NaluEventFooterParser::Print() {
+void EventFooterParser::Print() {
     std::cout << this->Stream().str();
 
 }

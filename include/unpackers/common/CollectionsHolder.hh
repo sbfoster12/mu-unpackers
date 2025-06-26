@@ -14,7 +14,7 @@
 //Custom
 #include <data_products/common/DataProduct.hh>
 
-namespace unpackers {
+namespace unpackers::common {
 
     class CollectionsHolder : public TObject {
         
@@ -26,7 +26,7 @@ namespace unpackers {
         //Destructor
         virtual ~CollectionsHolder();
 
-        std::map<std::string,std::shared_ptr<dataProducts::DataProductPtrCollection>>
+        std::map<std::string,std::shared_ptr<data_products::common::DataProductPtrCollection>>
         GetCollections();
 
         // This template function returns a std::vector<T>
@@ -98,8 +98,8 @@ namespace unpackers {
 
         void ClearCollections();
 
-        void RegisterCollections(const std::map<std::string,std::shared_ptr<dataProducts::DataProductPtrCollection>>& basePtrCol);
-        void RegisterCollection(const std::string label, const std::shared_ptr<dataProducts::DataProductPtrCollection> colPtr);
+        void RegisterCollections(const std::map<std::string,std::shared_ptr<data_products::common::DataProductPtrCollection>>& basePtrCol);
+        void RegisterCollection(const std::string label, const std::shared_ptr<data_products::common::DataProductPtrCollection> colPtr);
 
         template <typename T>
         std::unique_ptr<T>  MakeAndRegister() {
@@ -117,7 +117,7 @@ namespace unpackers {
     protected:
 
         //collections
-        std::map<std::string,std::shared_ptr<dataProducts::DataProductPtrCollection>> basePtrCols_;
+        std::map<std::string,std::shared_ptr<data_products::common::DataProductPtrCollection>> basePtrCols_;
 
         enum status { UNPACKING_SUCCESS = 0, UNPACKING_FAILURE = 1 };
 

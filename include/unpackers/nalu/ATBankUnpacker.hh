@@ -1,5 +1,5 @@
-#ifndef ATBANKUNPACKER_HH
-#define ATBANKUNPACKER_HH
+#ifndef NALU_ATBANKUNPACKER_HH
+#define NALU_ATBANKUNPACKER_HH
 
 //Custom
 #include "unpackers/common/Logger.hh"
@@ -9,9 +9,9 @@
 
 #define AT_PAYLOAD_ID 0
 
-namespace unpackers {
+namespace unpackers::nalu {
 
-    class ATBankUnpacker : public BankUnpacker {
+    class ATBankUnpacker : public unpackers::common::BankUnpacker {
         
     public:
         
@@ -38,4 +38,4 @@ namespace unpackers {
 
 }
 
-#endif // ATBANKUNPACKER_HH
+#endif // NALU_ATBANKUNPACKER_HH
