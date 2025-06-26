@@ -11,8 +11,8 @@ remove_from_path() {
     local current_value=$(eval echo \$$var_name)
     
     # Remove the path and clean up any double colons
-    local new_value=$(echo "$current_value" | sed "s|:*$path_to_remove:*|:|g" | sed 's/^:|//;s/:$//')
-    
+    local new_value=$(echo "$current_value" | awk -v RS=: -v ORS=: -v rm="$path_to_remove" '$0 != rm' | sed 's/:$//')
+
     # Set the new value
     eval export $var_name="$new_value"
     

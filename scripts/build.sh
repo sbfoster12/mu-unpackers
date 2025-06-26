@@ -53,6 +53,12 @@ while [[ "$#" -gt 0 ]]; do
     esac
 done
 
+# Check that the build directory ENV variable is not set
+if [ -z $UNPACKERS_CMAKE_PREFIX_PATH ]; then
+    echo "[build.sh, ERROR] UNPACKERS_CMAKE_PREFIX_PATH is not set. Please source $SCRIPT_DIR/setenv.sh first."
+   exit 1
+fi
+
 # Optionally clean build
 if [ "$OVERWRITE" = true ]; then
     echo "[build.sh] Cleaning previous build with: $CLEANUP_SCRIPT"
@@ -67,11 +73,9 @@ cd "$BUILD_DIR" || exit 1
 if [ "$SYSTEM_INSTALL" = true ]; then
     INSTALL_PREFIX="/usr/local"
 else
-    INSTALL_PREFIX="$BASE_DIR/install"
+    # INSTALL_PREFIX="$BASE_DIR/install"
+    INSTALL_PREFIX="$UNPACKERS_CMAKE_PREFIX_PATH"
 fi
-
-export UNPACKERS_CMAKE_PREFIX_PATH="$INSTALL_PREFIX"
-export CMAKE_PREFIX_PATH="$UNPACKERS_CMAKE_PREFIX_PATH:$CMAKE_PREFIX_PATH"
 
 echo "[build.sh] Running cmake with -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX"
 cmake -DCMAKE_INSTALL_PREFIX="$INSTALL_PREFIX" "$BASE_DIR"
