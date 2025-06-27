@@ -24,6 +24,9 @@ namespace unpackers::nalu {
         //Collections
         std::shared_ptr<data_products::common::DataProductPtrCollection> timePtrCol_;
 
+        /// ROOT class definition macro with versioning
+        ClassDefOverride(ATPayloadUnpacker,1)
+
     private:
         const std::string className_ = "ATPayloadUnpacker";
 

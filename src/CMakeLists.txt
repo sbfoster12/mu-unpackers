@@ -1,7 +1,7 @@
 # Glob source files
 file(GLOB SOURCE_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/common/*.cc
-    # ${CMAKE_CURRENT_SOURCE_DIR}/wfd5/*.cc
+    ${CMAKE_CURRENT_SOURCE_DIR}/wfd5/*.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/nalu/*.cc
 )
 
@@ -40,7 +40,7 @@ target_link_libraries(unpackers
 #These are the unpackers for which we make root dictionary
 set(Unpackers 
     ${PROJECT_SOURCE_DIR}/include/unpackers/common/*.hh
-    # ${PROJECT_SOURCE_DIR}/include/unpackers/wfd5/*.hh
+    ${PROJECT_SOURCE_DIR}/include/unpackers/wfd5/*.hh
     ${PROJECT_SOURCE_DIR}/include/unpackers/nalu/*.hh
 )
 

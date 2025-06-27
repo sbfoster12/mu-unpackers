@@ -9,6 +9,8 @@
 #include <nlohmann/json.hpp>
 #include <cstdlib>
 
+#include <TObject.h>
+
 //Custom
 #include "unpackers/common/Logger.hh"
 
@@ -66,7 +68,7 @@ namespace unpackers::common {
             {}
     };
 
-    class Parser {
+    class Parser : public TObject {
         
     public:
         
@@ -98,6 +100,8 @@ namespace unpackers::common {
         //Print
         virtual std::ostringstream Stream() = 0;
         virtual void Print() = 0;
+
+        ClassDef(Parser, 1)  // ROOT version number here
 
     private:
         std::string className_ = "Parser";

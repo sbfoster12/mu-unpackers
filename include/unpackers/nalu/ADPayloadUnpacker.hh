@@ -37,6 +37,9 @@ namespace unpackers::nalu {
         std::shared_ptr<data_products::common::DataProductPtrCollection> waveformPtrCol_;
         std::shared_ptr<data_products::common::DataProductPtrCollection> eventFooterPtrCol_;
 
+        /// ROOT class definition macro with versioning
+        ClassDefOverride(ADPayloadUnpacker,1)
+
     private:
         const std::string className_ = "ADPayloadUnpacker";
 
