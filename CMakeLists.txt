@@ -36,11 +36,20 @@ set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
 add_subdirectory(midasio)
 add_subdirectory(src)
 
-# Create the executable
-add_executable(unpack src/main.cc)
+# Create the nalu executable
+add_executable(unpack_nalu src/main_nalu.cc)
 
 # Link libraries
-target_link_libraries(unpack
+target_link_libraries(unpack_nalu
+    PUBLIC 
+        unpackers 
+)
+
+# Create the wfd5 executable
+add_executable(unpack_wfd5 src/main_wfd5.cc)
+
+# Link libraries
+target_link_libraries(unpack_wfd5
     PUBLIC 
         unpackers 
 )
@@ -51,8 +60,13 @@ install(TARGETS
         LIBRARY DESTINATION lib
 )
 
-# Install the executable
-install(TARGETS unpack
+# Install the executables
+install(TARGETS unpack_nalu
+        DESTINATION bin
+)
+
+# Install the executables
+install(TARGETS unpack_wfd5
         DESTINATION bin
 )
 
