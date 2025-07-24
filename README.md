@@ -26,7 +26,7 @@ You should then source the `setenv.sh` script to set up the environment, and the
 
 ```bash
 source ./scripts/setenv.sh
-./scripts/build.sh
+./scripts/build.sh -o
 ```
 
 ## Running the application

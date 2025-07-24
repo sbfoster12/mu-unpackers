@@ -76,7 +76,7 @@ install(TARGETS unpack_wfd5
 # target_compile_options(unpack_wfd5 PRIVATE -Wall -Wextra -Wno-undef)
 
 # set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -v")
-set(CMAKE_CXX_FLAGS_DEBUG "-g -O0")
-set(CMAKE_C_FLAGS_DEBUG "-g -O0")
+# set(CMAKE_CXX_FLAGS_DEBUG "-g -O0")
+# set(CMAKE_C_FLAGS_DEBUG "-g -O0")
 
-set(CMAKE_BUILD_TYPE Debug)
+# set(CMAKE_BUILD_TYPE Debug)
