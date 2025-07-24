@@ -22,19 +22,19 @@ Some description...
 #include "unpackers/nalu/NaluEventUnpacker.hh"
 
 // Custom - Data Products
-#include <data_products/nalu/EventHeader.hh>
-#include <data_products/nalu/PacketHeader.hh>
-#include <data_products/nalu/Waveform.hh>
-#include <data_products/nalu/PacketFooter.hh>
-#include <data_products/nalu/EventFooter.hh>
-#include <data_products/nalu/Time.hh>
-#include <data_products/nalu/ODB.hh>
+#include <data_products/nalu/NaluEventHeader.hh>
+#include <data_products/nalu/NaluPacketHeader.hh>
+#include <data_products/nalu/NaluWaveform.hh>
+#include <data_products/nalu/NaluPacketFooter.hh>
+#include <data_products/nalu/NaluEventFooter.hh>
+#include <data_products/nalu/NaluTime.hh>
+#include <data_products/nalu/NaluODB.hh>
 
 #include <string>
 #include <sstream>
 // #include <nlohmann/json.hpp>
 
-using unpackers::common::LoggerHolder;
+using unpackers::LoggerHolder;
 
 int main(int argc, char *argv[])
 {
@@ -79,32 +79,32 @@ int main(int argc, char *argv[])
     outfile->SetCompressionAlgorithm(4); // LZ4. 40-50% faster, but slightly larger file sizes. 3.292s, 91MB
     TTree *tree = new TTree("tree", "tree");
 
-    data_products::nalu::EventHeaderCollection nalu_event_headers;
+    dataProducts::NaluEventHeaderCollection nalu_event_headers;
     tree->Branch("nalu_event_headers", &nalu_event_headers);
 
-    data_products::nalu::PacketHeaderCollection nalu_packet_headers;
+    dataProducts::NaluPacketHeaderCollection nalu_packet_headers;
     tree->Branch("nalu_packet_headers", &nalu_packet_headers);
 
-    data_products::nalu::WaveformCollection nalu_waveforms;
+    dataProducts::NaluWaveformCollection nalu_waveforms;
     tree->Branch("nalu_waveforms", &nalu_waveforms);
 
-    data_products::nalu::PacketFooterCollection nalu_packet_footers;
+    dataProducts::NaluPacketFooterCollection nalu_packet_footers;
     tree->Branch("nalu_packet_footers", &nalu_packet_footers);
 
-    data_products::nalu::EventFooterCollection nalu_event_footers;
+    dataProducts::NaluEventFooterCollection nalu_event_footers;
     tree->Branch("nalu_event_footers", &nalu_event_footers);
 
-    data_products::nalu::TimeCollection nalu_times;
+    dataProducts::NaluTimeCollection nalu_times;
     tree->Branch("nalu_times", &nalu_times);
 
-    data_products::nalu::ODB odb;
+    dataProducts::NaluODB nalu_odb;
 
     // -----------------------------------------------------------------------------------------------
 
     // Set up an event unpacker object
     // This object contains the methods for
     // doing the unpacking of a TMEvent
-    auto eventUnpacker = new unpackers::nalu::NaluEventUnpacker();
+    auto eventUnpacker = new unpackers::NaluEventUnpacker();
 
     // We need to get a midas event
     TMReaderInterface *mReader = TMNewReader(input_file_name.c_str());
@@ -131,7 +131,7 @@ int main(int argc, char *argv[])
         int event_id = thisEvent->event_id;
 
         // Check if this is an internal midas event
-        if (unpackers::common::IsHeaderEvent(thisEvent)) {
+        if (unpackers::IsHeaderEvent(thisEvent)) {
             // Check if this is a BOR (begin of run)
             if (event_id == 32768) {
                 // This is a begin of run event
@@ -146,8 +146,8 @@ int main(int argc, char *argv[])
                 // nlohmann::json j = nlohmann::json::parse(odb_dump);
                 // std::cout << j.dump(4) << std::endl;
                 // make the ODB data product
-                odb = data_products::nalu::ODB(odb_dump);
-                outfile->WriteObject(&odb, "nalu_odb");
+                nalu_odb = dataProducts::NaluODB(odb_dump);
+                outfile->WriteObject(&nalu_odb, "nalu_odb");
             }
             delete thisEvent;
             continue;
@@ -174,12 +174,12 @@ int main(int argc, char *argv[])
             }
             // break;
 
-            nalu_event_headers = eventUnpacker->GetCollection<data_products::nalu::EventHeader>("EventHeaderCollection");
-            nalu_packet_headers = eventUnpacker->GetCollection<data_products::nalu::PacketHeader>("PacketHeaderCollection");
-            nalu_waveforms = eventUnpacker->GetCollection<data_products::nalu::Waveform>("WaveformCollection");
-            nalu_packet_footers = eventUnpacker->GetCollection<data_products::nalu::PacketFooter>("PacketFooterCollection");
-            nalu_event_footers = eventUnpacker->GetCollection<data_products::nalu::EventFooter>("EventFooterCollection");
-            nalu_times = eventUnpacker->GetCollection<data_products::nalu::Time>("TimeCollection");
+            nalu_event_headers = eventUnpacker->GetCollection<dataProducts::NaluEventHeader>("NaluEventHeaderCollection");
+            nalu_packet_headers = eventUnpacker->GetCollection<dataProducts::NaluPacketHeader>("NaluPacketHeaderCollection");
+            nalu_waveforms = eventUnpacker->GetCollection<dataProducts::NaluWaveform>("NaluWaveformCollection");
+            nalu_packet_footers = eventUnpacker->GetCollection<dataProducts::NaluPacketFooter>("NaluPacketFooterCollection");
+            nalu_event_footers = eventUnpacker->GetCollection<dataProducts::NaluEventFooter>("NaluEventFooterCollection");
+            nalu_times = eventUnpacker->GetCollection<dataProducts::NaluTime>("NaluTimeCollection");
 
             tree->Fill();
             nalu_event_headers.clear();

@@ -1,17 +1,17 @@
 #include "unpackers/nalu/NaluEventUnpacker.hh"
 
-using namespace unpackers::nalu;
-using unpackers::common::LoggerHolder;
+using namespace unpackers;
+using unpackers::LoggerHolder;
 
 
 NaluEventUnpacker::NaluEventUnpacker()
-    : unpackers::common::EventUnpacker(), 
+    : unpackers::EventUnpacker(), 
     className_("NaluEventUnpacker")
 {
     LoggerHolder::getInstance().InfoLogger << "We are constructing the " << className_ << std::endl;
 
-    bankUnpackers_[AD_BANK_ID] = this->MakeAndRegister<ADBankUnpacker>();
-    bankUnpackers_[AT_BANK_ID] = this->MakeAndRegister<ATBankUnpacker>();
+    bankUnpackers_[AD_BANK_ID] = this->MakeAndRegister<NaluADBankUnpacker>();
+    bankUnpackers_[AT_BANK_ID] = this->MakeAndRegister<NaluATBankUnpacker>();
 
 }
 

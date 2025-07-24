@@ -1,15 +1,15 @@
 #include "unpackers/wfd5/WFD5HeaderParser.hh"
 
-using namespace unpackers::wfd5;
+using namespace unpackers;
 
-WFD5HeaderParser::WFD5HeaderParser() : unpackers::common::Parser() {};
+WFD5HeaderParser::WFD5HeaderParser() : Parser() {};
 
 WFD5HeaderParser::~WFD5HeaderParser() {};
 
 //Method to create shared ptr
-std::unique_ptr<data_products::wfd5::WFD5Header> 
+std::unique_ptr<dataProducts::WFD5Header> 
 WFD5HeaderParser::NewDataProduct(unsigned int crateNum) {
-    return std::make_unique<data_products::wfd5::WFD5Header>(
+    return std::make_unique<dataProducts::WFD5Header>(
                 crateNum
                 ,AMCNo()
                 ,LV1ID()

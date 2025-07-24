@@ -1,7 +1,7 @@
 #include "unpackers/wfd5/WFD5EventUnpacker.hh"
 
-using namespace unpackers::wfd5;
-using unpackers::common::LoggerHolder;
+using namespace unpackers;
+using unpackers::LoggerHolder;
 
 
 WFD5EventUnpacker::WFD5EventUnpacker()
@@ -11,7 +11,7 @@ WFD5EventUnpacker::WFD5EventUnpacker()
     LoggerHolder::getInstance().InfoLogger << "We are constructing the basic event unpacker." << std::endl;
 
     //Create the bank unpackers
-    bankUnpackers_[CR_BANK_ID] = std::make_unique<CRBankUnpacker>();
+    bankUnpackers_[CR_BANK_ID] = std::make_unique<WFD5CRBankUnpacker>();
 
     //Register the collections in the bank unpacker
     for (const auto& bankUnpacker : bankUnpackers_) {

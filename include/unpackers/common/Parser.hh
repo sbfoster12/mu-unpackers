@@ -14,7 +14,7 @@
 //Custom
 #include "unpackers/common/Logger.hh"
 
-namespace unpackers::common {
+namespace unpackers {
 
     // Helper methods
     inline uint64_t BitMask(int num_bytes) {

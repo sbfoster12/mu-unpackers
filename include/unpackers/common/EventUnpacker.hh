@@ -11,7 +11,7 @@
 
 #define CR_BANK_ID 0
 
-namespace unpackers::common {
+namespace unpackers {
 
     class EventUnpacker : public CollectionsHolder {
         

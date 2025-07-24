@@ -1,14 +1,14 @@
-#ifndef WFD5EVENTUNPACKER_HH
-#define WFD5EVENTUNPACKER_HH
+#ifndef WFD5_EVENTUNPACKER_HH
+#define WFD5_EVENTUNPACKER_HH
 
 //Custom
 #include "unpackers/common/Logger.hh"
 #include "unpackers/common/EventUnpacker.hh"
-#include "unpackers/wfd5/CRBankUnpacker.hh"
+#include "unpackers/wfd5/WFD5CRBankUnpacker.hh"
 
-namespace unpackers::wfd5 {
+namespace unpackers {
 
-    class WFD5EventUnpacker : public unpackers::common::EventUnpacker {
+    class WFD5EventUnpacker : public EventUnpacker {
 
     public:
         
@@ -33,4 +33,4 @@ namespace unpackers::wfd5 {
 
 }
 
-#endif // WFD5EVENTUNPACKER_HH
+#endif // WFD5_EVENTUNPACKER_HH

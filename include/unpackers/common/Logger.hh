@@ -6,7 +6,7 @@
 #include <sstream>
 #include <string>
 
-namespace unpackers::common {
+namespace unpackers {
 
     class Logger {
         public:

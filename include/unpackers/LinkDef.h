@@ -5,30 +5,32 @@
 #pragma link off all functions;
 
 // Common unpackers classes
-#pragma link C++ class unpackers::common::Parser+;
-#pragma link C++ class unpackers::common::CollectionsHolder+;
-#pragma link C++ class unpackers::common::EventUnpacker+;
-#pragma link C++ class unpackers::common::BankUnpacker+;
-#pragma link C++ class unpackers::common::PayloadUnpacker+;
+#pragma link C++ class unpackers::Parser+;
+#pragma link C++ class unpackers::CollectionsHolder+;
+#pragma link C++ class unpackers::EventUnpacker+;
+#pragma link C++ class unpackers::BankUnpacker+;
+#pragma link C++ class unpackers::PayloadUnpacker+;
 
 // WFD5 unpackers classes
-#pragma link C++ class unpackers::wfd5::FC7HeaderParser+;
-#pragma link C++ class unpackers::wfd5::WaveformParser+;
-#pragma link C++ class unpackers::wfd5::WaveformHeaderParser+;
-#pragma link C++ class unpackers::wfd5::WaveformHeaderAsyncParser+;
-#pragma link C++ class unpackers::wfd5::ChannelHeaderParser+;
-#pragma link C++ class unpackers::wfd5::ChannelHeaderAsyncParser+;
-#pragma link C++ class unpackers::wfd5::WFD5HeaderParser+;
-#pragma link C++ class unpackers::wfd5::CRBankUnpacker+;
-#pragma link C++ class unpackers::wfd5::WFD5PayloadUnpacker+;
-#pragma link C++ class unpackers::wfd5::FC7PayloadUnpacker+;
-#pragma link C++ class unpackers::wfd5::WFD5EventUnpacker+;
+#pragma link C++ class unpackers::WFD5WaveformParser+;
+#pragma link C++ class unpackers::WFD5WaveformHeaderParser+;
+#pragma link C++ class unpackers::WFD5WaveformHeaderAsyncParser+;
+#pragma link C++ class unpackers::WFD5ChannelHeaderParser+;
+#pragma link C++ class unpackers::WFD5ChannelHeaderAsyncParser+;
+#pragma link C++ class unpackers::WFD5HeaderParser+;
+#pragma link C++ class unpackers::WFD5CRBankUnpacker+;
+#pragma link C++ class unpackers::WFD5PayloadUnpacker+;
+#pragma link C++ class unpackers::WFD5EventUnpacker+;
+
+// FC7 unpackers classes
+#pragma link C++ class unpackers::FC7HeaderParser+;
+#pragma link C++ class unpackers::FC7PayloadUnpacker+;
 
 // Nalu unpackers classes
-#pragma link C++ class unpackers::nalu::ADBankUnpacker+;
-#pragma link C++ class unpackers::nalu::ATBankUnpacker+;
-#pragma link C++ class unpackers::nalu::ADPayloadUnpacker+;
-#pragma link C++ class unpackers::nalu::ATPayloadUnpacker+;
-#pragma link C++ class unpackers::nalu::NaluEventUnpacker+;
+#pragma link C++ class unpackers::NaluADBankUnpacker+;
+#pragma link C++ class unpackers::NaluATBankUnpacker+;
+#pragma link C++ class unpackers::NaluADPayloadUnpacker+;
+#pragma link C++ class unpackers::NaluATPayloadUnpacker+;
+#pragma link C++ class unpackers::NaluEventUnpacker+;
 
 #endif

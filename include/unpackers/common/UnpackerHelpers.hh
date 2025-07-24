@@ -17,7 +17,7 @@
 //Custom
 #include "midasio.h"
 
-namespace unpackers::common {
+namespace unpackers {
 
     // Method to check if midas event is an internal midas event
     bool IsHeaderEvent(const TMEvent* thisEvent);

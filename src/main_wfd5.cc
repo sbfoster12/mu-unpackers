@@ -22,14 +22,14 @@ Some description...
 #include "unpackers/wfd5/WFD5EventUnpacker.hh"
 
 // WFD5 Data Products
-#include <data_products/wfd5/Waveform.hh>
-#include <data_products/wfd5/ODB.hh>
+#include <data_products/wfd5/WFD5Waveform.hh>
+#include <data_products/wfd5/WFD5ODB.hh>
 
 #include <string>
 #include <sstream>
 // #include <nlohmann/json.hpp>
 
-using unpackers::common::LoggerHolder;
+using unpackers::LoggerHolder;
 
 int main(int argc, char *argv[])
 {
@@ -74,17 +74,17 @@ int main(int argc, char *argv[])
     outfile->SetCompressionAlgorithm(4); // LZ4. 40-50% faster, but slightly larger file sizes. 3.292s, 91MB
     TTree *tree = new TTree("tree", "tree");
 
-    data_products::wfd5::WaveformCollection wfd5_waveforms;
+    dataProducts::WFD5WaveformCollection wfd5_waveforms;
     tree->Branch("wfd5_waveforms", &wfd5_waveforms);
 
-    data_products::wfd5::ODB odb;
+    dataProducts::WFD5ODB wfd5_odb;
 
     // -----------------------------------------------------------------------------------------------
 
     // Set up an event unpacker object
     // This object contains the methods for
     // doing the unpacking of a TMEvent
-    auto eventUnpacker = new unpackers::wfd5::WFD5EventUnpacker();
+    auto eventUnpacker = new unpackers::WFD5EventUnpacker();
 
     // We need to get a midas event
     TMReaderInterface *mReader = TMNewReader(input_file_name.c_str());
@@ -111,7 +111,7 @@ int main(int argc, char *argv[])
         int event_id = thisEvent->event_id;
 
         // Check if this is an internal midas event
-        if (unpackers::common::IsHeaderEvent(thisEvent)) {
+        if (unpackers::IsHeaderEvent(thisEvent)) {
             // Check if this is a BOR (begin of run)
             if (event_id == 32768) {
                 // This is a begin of run event
@@ -126,8 +126,8 @@ int main(int argc, char *argv[])
                 // nlohmann::json j = nlohmann::json::parse(odb_dump);
                 // std::cout << j.dump(4) << std::endl;
                 // make the ODB data product
-                odb = data_products::wfd5::ODB(odb_dump);
-                outfile->WriteObject(&odb, "wfd5_odb");
+                wfd5_odb = dataProducts::WFD5ODB(odb_dump);
+                outfile->WriteObject(&wfd5_odb, "wfd5_odb");
             }
             delete thisEvent;
             continue;
@@ -154,8 +154,8 @@ int main(int argc, char *argv[])
             }
             // break;
 
-            // wfd5_waveforms = eventUnpacker->GetCollection<data_products::wfd5::Waveform>("WaveformCollection");
-            auto waveformsVector = eventUnpacker->GetCollectionVector<data_products::wfd5::Waveform>("WaveformCollection", &data_products::wfd5::Waveform::waveformIndex);
+            // wfd5_waveforms = eventUnpacker->GetCollection<dataProducts::Waveform>("WaveformCollection");
+            auto waveformsVector = eventUnpacker->GetCollectionVector<dataProducts::WFD5Waveform>("WFD5WaveformCollection", &dataProducts::WFD5Waveform::waveformIndex);
             for (auto &waveforms_tmp : waveformsVector) {
                 wfd5_waveforms = waveforms_tmp;
                 tree->Fill();

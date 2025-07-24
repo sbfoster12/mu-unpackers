@@ -1,18 +1,18 @@
-#ifndef NALUEVENTUNPACKER_HH
-#define NALUEVENTUNPACKER_HH
+#ifndef NALU_EVENTUNPACKER_HH
+#define NALU_EVENTUNPACKER_HH
 
 //Custom
 #include "unpackers/common/Logger.hh"
 #include "unpackers/common/EventUnpacker.hh"
-#include "unpackers/nalu/ADBankUnpacker.hh"
-#include "unpackers/nalu/ATBankUnpacker.hh"
+#include "unpackers/nalu/NaluADBankUnpacker.hh"
+#include "unpackers/nalu/NaluATBankUnpacker.hh"
 
 #define AD_BANK_ID 0
 #define AT_BANK_ID 1
     
-namespace unpackers::nalu {
+namespace unpackers {
 
-    class NaluEventUnpacker : public unpackers::common::EventUnpacker {
+    class NaluEventUnpacker : public EventUnpacker {
         
     public:
         
@@ -37,4 +37,4 @@ namespace unpackers::nalu {
 
 }
 
-#endif // NALUEVENTUNPACKER_HH
+#endif // NALU_EVENTUNPACKER_HH

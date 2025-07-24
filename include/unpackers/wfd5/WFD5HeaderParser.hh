@@ -1,5 +1,5 @@
-#ifndef WFD5HEADERPARSER_HH
-#define WFD5HEADERPARSER_HH
+#ifndef WFD5_HEADERPARSER_HH
+#define WFD5_HEADERPARSER_HH
 
 //Custom
 #include "unpackers/common/Parser.hh"
@@ -61,9 +61,9 @@
 #define ChannelsEnabled_BIT 59
 #define ChannelsEnabled_MASK 0x1f
 
-namespace unpackers::wfd5 {
+namespace unpackers {
 
-    class WFD5HeaderParser : public unpackers::common::Parser {
+    class WFD5HeaderParser : public Parser {
 
     public:
         
@@ -74,7 +74,7 @@ namespace unpackers::wfd5 {
         ~WFD5HeaderParser();
 
         //Method to create shared ptr
-        std::unique_ptr<data_products::wfd5::WFD5Header> NewDataProduct(unsigned int crateNum);
+        std::unique_ptr<dataProducts::WFD5Header> NewDataProduct(unsigned int crateNum);
 
         //Get methods
         uint32_t        AMCNo() const;
@@ -111,4 +111,4 @@ namespace unpackers::wfd5 {
     };
 }
 
-#endif // WFD5HEADERPARSER_HH
+#endif // WFD5_HEADERPARSER_HH

@@ -1,6 +1,6 @@
 #include "unpackers/common/PayloadUnpacker.hh"
 
-using namespace unpackers::common;
+using namespace unpackers;
 
 PayloadUnpacker::PayloadUnpacker() 
     : CollectionsHolder(),

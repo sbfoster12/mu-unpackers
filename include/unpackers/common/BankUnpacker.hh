@@ -11,7 +11,7 @@
 #include "unpackers/common/CollectionsHolder.hh"
 #include "unpackers/common/PayloadUnpacker.hh"
 
-namespace unpackers::common {
+namespace unpackers {
 
     class BankUnpacker : public CollectionsHolder {
         

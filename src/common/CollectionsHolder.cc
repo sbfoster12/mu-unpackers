@@ -1,8 +1,8 @@
 #include "unpackers/common/CollectionsHolder.hh"
 
-ClassImp(unpackers::common::CollectionsHolder);
+ClassImp(unpackers::CollectionsHolder);
 
-using namespace unpackers::common;
+using namespace unpackers;
 
 CollectionsHolder::CollectionsHolder()
     : className_("CollectionsHolder")
@@ -10,7 +10,7 @@ CollectionsHolder::CollectionsHolder()
 
 CollectionsHolder::~CollectionsHolder() {}
 
-std::map<std::string,std::shared_ptr<data_products::common::DataProductPtrCollection>>
+std::map<std::string,std::shared_ptr<dataProducts::DataProductPtrCollection>>
 CollectionsHolder::GetCollections() {
     return basePtrCols_;
 }
@@ -20,14 +20,14 @@ void CollectionsHolder::ClearCollections() {
     for (auto& col : basePtrCols_) { col.second->clear(); }
 }
 
-void CollectionsHolder::RegisterCollections(const std::map<std::string,std::shared_ptr<data_products::common::DataProductPtrCollection>>& colsToAdd) {
+void CollectionsHolder::RegisterCollections(const std::map<std::string,std::shared_ptr<dataProducts::DataProductPtrCollection>>& colsToAdd) {
     //Register the provided collections
     for (const auto& colToAdd : colsToAdd) {
        this->RegisterCollection(colToAdd.first,colToAdd.second);
     }
 }
 
-void CollectionsHolder::RegisterCollection(const std::string label, const std::shared_ptr<data_products::common::DataProductPtrCollection> colPtr) {
+void CollectionsHolder::RegisterCollection(const std::string label, const std::shared_ptr<dataProducts::DataProductPtrCollection> colPtr) {
     //find if label already exists
     auto it = basePtrCols_.find(label);
     if (it != basePtrCols_.end()) {

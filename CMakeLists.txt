@@ -70,9 +70,13 @@ install(TARGETS unpack_wfd5
         DESTINATION bin
 )
 
-# # Enable debugging symbols
-# target_compile_options(unpacker PRIVATE -g -v)
+# Enable debugging symbols
+# target_compile_options(unpack_wfd5 PRIVATE -g -v)
 
-# target_compile_options(unpacker PRIVATE -Wall -Wextra -Wno-undef)
+# target_compile_options(unpack_wfd5 PRIVATE -Wall -Wextra -Wno-undef)
 
 # set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -v")
+set(CMAKE_CXX_FLAGS_DEBUG "-g -O0")
+set(CMAKE_C_FLAGS_DEBUG "-g -O0")
+
+set(CMAKE_BUILD_TYPE Debug)

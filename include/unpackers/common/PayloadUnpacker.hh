@@ -13,7 +13,7 @@
 #include "unpackers/common/CollectionsHolder.hh"
 #include <data_products/common/DataProduct.hh>
 
-namespace unpackers::common {
+namespace unpackers {
 
     class PayloadUnpacker : public CollectionsHolder {
         
