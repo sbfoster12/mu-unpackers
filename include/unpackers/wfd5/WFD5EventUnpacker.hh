@@ -18,9 +18,9 @@ namespace unpackers {
         //Destructor
         ~WFD5EventUnpacker();
 
-        int UnpackEvent(TMEvent* event) override;
+        unpackingStatus UnpackEvent(TMEvent* event) override;
 
-        int UnpackBank(uint64_t* bankData, unsigned int totalWords, int serialNumber, std::string bankName) override;
+        unpackingStatus UnpackBank(uint64_t* bankData, unsigned int totalWords, int serialNumber, std::string bankName) override;
 
         // ROOT class definition macro with versioning
         ClassDefOverride(WFD5EventUnpacker,1)

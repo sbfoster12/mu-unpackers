@@ -22,6 +22,9 @@ Some description...
 #include "unpackers/wfd5/WFD5EventUnpacker.hh"
 
 // WFD5 Data Products
+#include <data_products/wfd5/WFD5Header.hh>
+#include <data_products/wfd5/WFD5ChannelHeader.hh>
+#include <data_products/wfd5/WFD5WaveformHeader.hh>
 #include <data_products/wfd5/WFD5Waveform.hh>
 #include <data_products/wfd5/WFD5ODB.hh>
 
@@ -74,7 +77,13 @@ int main(int argc, char *argv[])
     outfile->SetCompressionAlgorithm(4); // LZ4. 40-50% faster, but slightly larger file sizes. 3.292s, 91MB
     TTree *tree = new TTree("tree", "tree");
 
+    dataProducts::WFD5HeaderCollection wfd5_headers;
+    dataProducts::WFD5ChannelHeaderCollection wfd5_channel_headers;
+    dataProducts::WFD5WaveformHeaderCollection wfd5_waveform_headers;
     dataProducts::WFD5WaveformCollection wfd5_waveforms;
+    tree->Branch("wfd5_headers", &wfd5_headers);
+    tree->Branch("wfd5_channel_headers", &wfd5_channel_headers);
+    tree->Branch("wfd5_waveform_headers", &wfd5_waveform_headers);
     tree->Branch("wfd5_waveforms", &wfd5_waveforms);
 
     dataProducts::WFD5ODB wfd5_odb;
@@ -141,27 +150,33 @@ int main(int argc, char *argv[])
         // only unpack events with id 1
         if (event_id == 1) {
             nTotalMidasEvents++;
-            //std::cout << "Processing event " << nTotalMidasEvents << std::endl;
-            // Unpack the event
-            // This will fill the dataproduct collections
-            auto status = eventUnpacker->UnpackEvent(thisEvent);
-        
-            // std::cout << "status: " << status << std::endl;
-            // Only proceed if the status = 0
-            if (status != 0) {
-                delete thisEvent;
-                continue;
-            }
-            // break;
+            // std::cout << "Processing event " << nTotalMidasEvents << std::endl;
+            
+            // Unpack the event; this is done in a loop in case there are multiple "trigger" events in the midas event
+            unpackers::unpackingStatus status = unpackers::unpackingStatus::Failure;
+            while ( (status = eventUnpacker->UnpackEvent(thisEvent)) == unpackers::unpackingStatus::SuccessMore) {
+                // Get the data
+                wfd5_headers = eventUnpacker->GetNextCollection<dataProducts::WFD5Header>("WFD5HeaderCollection");
+                wfd5_channel_headers = eventUnpacker->GetNextCollection<dataProducts::WFD5ChannelHeader>("WFD5ChannelHeaderCollection");
+                wfd5_waveform_headers = eventUnpacker->GetNextCollection<dataProducts::WFD5WaveformHeader>("WFD5WaveformHeaderCollection");
+                wfd5_waveforms = eventUnpacker->GetNextCollection<dataProducts::WFD5Waveform>("WFD5WaveformCollection");
 
-            // wfd5_waveforms = eventUnpacker->GetCollection<dataProducts::Waveform>("WaveformCollection");
-            auto waveformsVector = eventUnpacker->GetCollectionVector<dataProducts::WFD5Waveform>("WFD5WaveformCollection", &dataProducts::WFD5Waveform::waveformIndex);
-            for (auto &waveforms_tmp : waveformsVector) {
-                wfd5_waveforms = waveforms_tmp;
+                // std::cout << "Unpacked " << thisEvent->serial_number << ": "
+                //           << wfd5_headers.size() << " WFD5 headers, "
+                //           << wfd5_channel_headers.size() << " WFD5 channel headers, "
+                //           << wfd5_waveform_headers.size() << " WFD5 waveform headers, "
+                //           << wfd5_waveforms.size() << " WFD5 waveforms." << std::endl;
                 tree->Fill();
                 wfd5_waveforms.clear();
-            } // end of loop over waveform collections (each Midas event can have multiple triggers)
+                wfd5_headers.clear();
+                wfd5_channel_headers.clear();
+                wfd5_waveform_headers.clear();
+            }
 
+            // Clean up the event now that we are done with it
+            delete thisEvent;
+            continue;
+            
         } // end if event id = 1
 
     } // end loop over events

@@ -22,9 +22,9 @@ namespace unpackers {
         //Destructor
         ~NaluEventUnpacker();
 
-        int UnpackEvent(TMEvent* event) override;
+        unpackingStatus UnpackEvent(TMEvent* event) override;
 
-        int UnpackBank(uint64_t* bank_data, unsigned int total_words, int serial_number, std::string bank_name) override;
+        unpackingStatus UnpackBank(uint64_t* bank_data, unsigned int total_words, int serial_number, std::string bank_name) override;
 
         /// ROOT class definition macro with versioning
         ClassDefOverride(NaluEventUnpacker,1)

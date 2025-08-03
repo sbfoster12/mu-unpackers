@@ -17,7 +17,7 @@ NaluATPayloadUnpacker::NaluATPayloadUnpacker()
 
 NaluATPayloadUnpacker::~NaluATPayloadUnpacker() {};
 
-int NaluATPayloadUnpacker::Unpack(const uint64_t* words, unsigned int& wordNum) {
+unpackingStatus NaluATPayloadUnpacker::Unpack(const uint64_t* words, unsigned int& wordNum) {
     LoggerHolder::getInstance().InfoLogger << "  We are unpacking an AT payload." << std::endl;
 
     // Store the starting word for comparison at the end
@@ -36,5 +36,5 @@ int NaluATPayloadUnpacker::Unpack(const uint64_t* words, unsigned int& wordNum) 
     // Clear data from parser
     naluTimeParser_->Clear();
 
-    return UNPACKING_SUCCESS;
+    return unpackingStatus::Success;
 };

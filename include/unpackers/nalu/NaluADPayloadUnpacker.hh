@@ -28,7 +28,7 @@ namespace unpackers {
         //Destructor
         ~NaluADPayloadUnpacker();
 
-        int Unpack(const uint64_t* words, unsigned int& wordNum) override;
+        unpackingStatus Unpack(const uint64_t* words, unsigned int& wordNum) override;
 
         //Collections
         std::shared_ptr<dataProducts::DataProductPtrCollection> naluEventHeaderPtrCol_;

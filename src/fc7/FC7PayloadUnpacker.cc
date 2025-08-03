@@ -17,7 +17,7 @@ FC7PayloadUnpacker::FC7PayloadUnpacker()
 
 FC7PayloadUnpacker::~FC7PayloadUnpacker() {};
 
-int FC7PayloadUnpacker::Unpack(const uint64_t* words, unsigned int& wordNum) {
+unpackingStatus FC7PayloadUnpacker::Unpack(const uint64_t* words, unsigned int& wordNum) {
     LoggerHolder::getInstance().InfoLogger << "\tWe are unpacking a FC7 payload." << std::endl;
 
     /*
@@ -47,5 +47,5 @@ int FC7PayloadUnpacker::Unpack(const uint64_t* words, unsigned int& wordNum) {
     wordNum-=3; // for AMC13+FC7 header
     wordNum+=data_length;
 
-    return UNPACKING_SUCCESS;
+    return unpackingStatus::Success;
 };

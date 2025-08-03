@@ -20,7 +20,7 @@ namespace unpackers {
         //Destructor
         ~FC7PayloadUnpacker();
 
-        int Unpack(const uint64_t* words, unsigned int& wordNum) override;
+        unpackingStatus Unpack(const uint64_t* words, unsigned int& wordNum) override;
 
         //Collections
         std::shared_ptr<dataProducts::DataProductPtrCollection> FC7HeaderPtrCol_;

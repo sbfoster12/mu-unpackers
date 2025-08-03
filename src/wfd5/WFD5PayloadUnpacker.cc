@@ -28,7 +28,7 @@ WFD5PayloadUnpacker::WFD5PayloadUnpacker()
 
 WFD5PayloadUnpacker::~WFD5PayloadUnpacker() {};
 
-int WFD5PayloadUnpacker::Unpack(const uint64_t* words, unsigned int& wordNum) {
+unpackingStatus WFD5PayloadUnpacker::Unpack(const uint64_t* words, unsigned int& wordNum) {
     LoggerHolder::getInstance().InfoLogger << "\tWe are unpacking a WFD5 payload." << std::endl;
 
     //Store the starting word for comparison at the end
@@ -64,7 +64,7 @@ int WFD5PayloadUnpacker::Unpack(const uint64_t* words, unsigned int& wordNum) {
         LoggerHolder::getInstance().InfoLogger << "\t\tThis event is empty. Not unpacking." << std::endl;
         //increment the current word and return
         wordNum+=data_length;
-        return UNPACKING_FAILURE;
+        return unpackingStatus::Failure;
     }
 
     //Create the data product
@@ -94,11 +94,11 @@ int WFD5PayloadUnpacker::Unpack(const uint64_t* words, unsigned int& wordNum) {
         std::cerr << "Error: didn't parse entire data length\n"
         << "Location: WFD5PayloadUnpacker::Unpack(uint64_t* words, unsigned int& wordNum)\n"
         << "Details: the data length is " << data_length << ", but the number of parse words is " << wordNum - startWordNum << std::endl;
-        return UNPACKING_FAILURE;
+        return unpackingStatus::Failure;
     }
 
-    return UNPACKING_SUCCESS;
-};
+    return unpackingStatus::Success;
+};  
 
 
 void WFD5PayloadUnpacker::UnpackSyncMode(const uint64_t* words, unsigned int& wordNum, int amcSlot) {

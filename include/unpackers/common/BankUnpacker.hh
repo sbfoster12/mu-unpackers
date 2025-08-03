@@ -24,9 +24,9 @@ namespace unpackers {
         virtual ~BankUnpacker();
 
         // Virtual function to read the event
-        virtual int UnpackBank(TMEvent* event, const std::string& bankName) = 0;
+        virtual unpackingStatus UnpackBank(TMEvent* event, const std::string& bankName) = 0;
 
-        virtual int UnpackBank(uint64_t* bankData, unsigned int totalWords, int serialNumber, int crateNum) = 0;
+        virtual unpackingStatus UnpackBank(uint64_t* bankData, unsigned int totalWords, int serialNumber, int crateNum) = 0;
 
         void UpdateEventNum(int eventNum);
         void UpdateCrateNum(int crateNum);

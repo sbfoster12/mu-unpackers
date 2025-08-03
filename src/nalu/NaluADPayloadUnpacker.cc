@@ -31,7 +31,7 @@ NaluADPayloadUnpacker::NaluADPayloadUnpacker()
 
 NaluADPayloadUnpacker::~NaluADPayloadUnpacker() {};
 
-int NaluADPayloadUnpacker::Unpack(const uint64_t* words, unsigned int& wordNum) {
+unpackingStatus NaluADPayloadUnpacker::Unpack(const uint64_t* words, unsigned int& wordNum) {
     LoggerHolder::getInstance().InfoLogger << "  We are unpacking an AD payload." << std::endl;
 
     // Store the starting word for comparison at the end
@@ -174,7 +174,7 @@ int NaluADPayloadUnpacker::Unpack(const uint64_t* words, unsigned int& wordNum) 
         std::cerr << std::hex << "Error: wrong footer word\n"
         << "Location: int NaluADPayloadUnpacker::Unpack(const uint64_t* words, unsigned int& wordNum)\n"
         << "Details: The footer word is " << event_footer << ", but should be 0xEEEE"<< std::endl;
-        return UNPACKING_FAILURE;
+        return unpackingStatus::Failure;
     } else {
         LoggerHolder::getInstance().DebugLogger << "  Reached end of payload with footer word 0x" << std::hex << event_footer << std::endl;
     }
@@ -186,5 +186,5 @@ int NaluADPayloadUnpacker::Unpack(const uint64_t* words, unsigned int& wordNum) 
     naluPacketFooterParser_->Clear();
     naluEventFooterParser_->Clear();
 
-    return UNPACKING_SUCCESS;
+    return unpackingStatus::Success;
 };

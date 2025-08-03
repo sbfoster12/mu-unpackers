@@ -5,7 +5,9 @@ ClassImp(unpackers::CollectionsHolder);
 using namespace unpackers;
 
 CollectionsHolder::CollectionsHolder()
-    : className_("CollectionsHolder")
+    : className_("CollectionsHolder"),
+        currentIteration_(0),
+        maxIterations_(-1)
 {}
 
 CollectionsHolder::~CollectionsHolder() {}

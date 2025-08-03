@@ -22,9 +22,9 @@ namespace unpackers {
         ~NaluATBankUnpacker();
 
         // Virtual function to unpack the event
-        int UnpackBank(TMEvent* event, const std::string& bankName) override;
+        unpackingStatus UnpackBank(TMEvent* event, const std::string& bankName) override;
 
-        int UnpackBank(uint64_t* bankData, unsigned int totalWords, int serialNumber, int crateNum) override;
+        unpackingStatus UnpackBank(uint64_t* bankData, unsigned int totalWords, int serialNumber, int crateNum) override;
 
         /// ROOT class definition macro with versioning
         ClassDefOverride(NaluATBankUnpacker,1)

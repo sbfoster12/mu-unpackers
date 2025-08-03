@@ -87,6 +87,32 @@ namespace unpackers {
         }
 
         template <typename T, typename MembType>
+        std::map<int,std::vector<std::shared_ptr<dataProducts::DataProduct>>> GetPtrCollectionMap(std::string collectionName,MembType memb) {
+            //Get the collection of base pointers
+            auto colBasePtr = basePtrCols_[collectionName];
+            //Create a map of base pointers
+            std::map<int,std::vector<std::shared_ptr<dataProducts::DataProduct>>> basePtrColMap;
+            //Loop over references to base pointers and cast to derived to use MembType
+            for (const auto& basePtr : *colBasePtr) {
+                if (auto derivedPtr = dynamic_cast<T*>(basePtr.get())) {
+                    int index = derivedPtr->*memb;
+
+                    if (basePtrColMap.find(index) == basePtrColMap.end()) {
+                        // If it doesn't exist, create a new vector for this index
+                        basePtrColMap[index] = std::vector<std::shared_ptr<dataProducts::DataProduct>>();
+                    }
+
+                    basePtrColMap[index].push_back(basePtr);
+                } else {
+                    std::cerr << "Collection could not be found with the provided template.\n"
+                        << "Returning an empty vector\n";
+                    return {};
+                }
+            }
+            return basePtrColMap;
+        }
+
+        template <typename T, typename MembType>
         std::vector<std::vector<T>> GetCollectionVector(std::string collectionName,MembType memb) {
             auto derivedColMap = GetCollectionMap<T>(collectionName,memb);
             std::vector<std::vector<T>> derivedColVector;
@@ -94,6 +120,92 @@ namespace unpackers {
                 derivedColVector.push_back(pair.second);
             }
             return derivedColVector;
+        }
+
+        template <typename T, typename MembType>
+        std::vector<std::vector<T>> GetPtrCollectionVector(std::string collectionName,MembType memb) {
+            auto basePtrColMap = GetPtrCollectionMap<T>(collectionName,memb);
+            std::vector<std::vector<std::shared_ptr<dataProducts::DataProduct>>> basePtrColVector;
+            for (const auto& pair : basePtrColMap) {
+                basePtrColVector.push_back(pair.second);
+            }
+            return basePtrColVector;
+        }
+
+        void ResetIterations() {
+            currentIteration_ = -1;
+            maxIterations_ = -1;
+            iterationsMap_.clear();
+        }
+
+        template <typename T>
+        void SetIterations(std::string collectionName) {
+
+            //initialize internal state
+            currentIteration_ = 0;
+            maxIterations_ = -1;
+            iterationsMap_.clear();
+
+            // Get the collection of base pointers
+            auto colBasePtr = basePtrCols_[collectionName];
+            int iter = 0;
+            auto iterMemb = T::iterMemb;
+            for (const auto& basePtr : *colBasePtr) {
+                if (auto derivedPtr = dynamic_cast<T*>(basePtr.get())) {
+                    int index = derivedPtr->*iterMemb;
+                    if (iterationsMap_.find(index) == iterationsMap_.end()) {
+                        iterationsMap_[index] = iter;
+                        iter++;
+                    }
+                    
+                } else {
+                    std::cerr << "Collection could not be found with the provided template.\n"
+                        << "Returning an empty map\n";
+                    return;
+                }
+            }
+            maxIterations_ = iterationsMap_.size();
+        }
+
+        template <typename T>
+        std::vector<T> GetNextCollection(std::string collectionName) {
+
+            // First check if the current iteration is valid
+            if (currentIteration_ >= maxIterations_ || currentIteration_ < 0) {
+                return {};
+            }
+
+            //Create derived object (not pointer) collection
+            std::vector<T> derivedCol;
+            
+            //Get the collection of base pointers
+            auto colBasePtr = basePtrCols_[collectionName];
+
+            // Loop over base pointers
+            for (const auto& basePtr : *colBasePtr) {
+                if (auto derivedPtr = dynamic_cast<T*>(basePtr.get())) {
+
+                    // Check if the derived class has an iteration member
+                    if (T::iterMemb) {
+                        int index = derivedPtr->*(T::iterMemb);
+                        int thisIteration = iterationsMap_[index];
+                        
+                        // if this is the correct index
+                        if (thisIteration == currentIteration_) {
+                            derivedCol.push_back(*derivedPtr);
+                        }
+                    } else {
+                        // If no iteration member, just add the derived pointer (all data products are share across trigger events)
+                        derivedCol.push_back(*derivedPtr);
+                    }
+                } else { // can't cast
+                    std::cerr << "Collection could not be found with the provided template.\n"
+                        << "Returning false\n";
+                    return {};
+                }
+            }
+
+            return derivedCol;
         }
 
         void ClearCollections();
@@ -119,11 +231,15 @@ namespace unpackers {
         //collections
         std::map<std::string,std::shared_ptr<dataProducts::DataProductPtrCollection>> basePtrCols_;
 
-        enum status { UNPACKING_SUCCESS = 0, UNPACKING_FAILURE = 1 };
+        // Internal state for unpacking "trigger" events
+        int currentIteration_; //current iteration
+        int maxIterations_; // Number of groups
+        std::map<int,int> iterationsMap_; // Iteration map
 
 
     };
-
+    // Define the unpacking status enum
+    enum unpackingStatus { Success = 0, SuccessDone = 1, SuccessMore = 2, Failure = 3};
 }
 
 #endif // COMMON_UNPACKING_COLLECTIONSHOLDER_HH

@@ -21,42 +21,94 @@ WFD5EventUnpacker::WFD5EventUnpacker()
 
 WFD5EventUnpacker::~WFD5EventUnpacker() {}
 
-int WFD5EventUnpacker::UnpackEvent(TMEvent* event) {
+unpackingStatus WFD5EventUnpacker::UnpackEvent(TMEvent* event) {
 
-    //Clear previous event
-    this->ClearCollections();
+    //Check internal state first
+    if (currentIteration_ == -1) {
+        // We have not processed the event yet
 
-    LoggerHolder::getInstance().InfoLogger << "Unpacking with Event ID: " << event->event_id << " and SN: " << event->serial_number << std::endl;
+        //Clear previous event
+        this->ClearCollections();
 
-    // Loop over all banks and read the CR banks
-    // Can we parallelize this loop?
-    event->FindAllBanks();
-    for (const auto& bank : event->banks) {
-        if (bank.name.substr(0, 2) == "CR") {
-            auto status = bankUnpackers_[CR_BANK_ID]->UnpackBank(event, bank.name);
+        LoggerHolder::getInstance().InfoLogger << "Unpacking with Event ID: " << event->event_id << " and SN: " << event->serial_number << std::endl;
 
-            if (status == UNPACKING_FAILURE) {
-                //Something went wrong, so clear the collections and return failure
-                this->ClearCollections();
-                return UNPACKING_FAILURE;
+        // Loop over all banks and read the CR banks
+        // Can we parallelize this loop?
+        event->FindAllBanks();
+        for (const auto& bank : event->banks) {
+            if (bank.name.substr(0, 2) == "CR") {
+                auto status = bankUnpackers_[CR_BANK_ID]->UnpackBank(event, bank.name);
+
+                if (status == unpackingStatus::Failure) {
+                    //Something went wrong, so clear the collections and return failure
+                    this->ClearCollections();
+                    return unpackingStatus::Failure;
+                }
+
+                // It is possible that multiple trigger events are in this unpacked midas event
+                // Initialize iterations for accessing each of these events separately using the waveform index
+                this->SetIterations<dataProducts::WFD5Waveform>("WFD5WaveformCollection");
             }
         }
+
+    } else { // if currentIteration_ != -1)
+        // This is not the first time we are processing this event
+        // Increment the iterations
+        currentIteration_++;
     }
 
-    return UNPACKING_SUCCESS;
+    // Now return the status
+    if (currentIteration_ < maxIterations_) {
+       return unpackingStatus::SuccessMore;
+    }
+    else if (currentIteration_ == maxIterations_) {
+        // We have processed all iterations, reset internal state
+        this->ResetIterations();
+        return unpackingStatus::SuccessDone;
+    } else {
+        // Something went wrong to get here
+        this->ResetIterations();
+        return unpackingStatus::Failure;
+    }
 }
 
 //method to unpack a bank directly instead of the event
-int WFD5EventUnpacker::UnpackBank(uint64_t* bankData, unsigned int totalWords, int serialNumber, std::string bankName) {
-    if (bankName.substr(0, 2) == "CR") {
-        bankUnpackers_[CR_BANK_ID]->ClearCollections();
-        int crateNum = std::stoi(bankName.substr(3, 4));
-        auto status = bankUnpackers_[CR_BANK_ID]->UnpackBank(bankData, totalWords, serialNumber, crateNum);
-        if (status == UNPACKING_FAILURE) {
-            //Something went wrong, so clear the collections and return failure
+unpackingStatus WFD5EventUnpacker::UnpackBank(uint64_t* bankData, unsigned int totalWords, int serialNumber, std::string bankName) {
+    
+    //Check internal state first
+    if (currentIteration_ == -1) {
+        // We have not processed this bankData yet
+        if (bankName.substr(0, 2) == "CR") {
             bankUnpackers_[CR_BANK_ID]->ClearCollections();
-            return UNPACKING_FAILURE;
+            int crateNum = std::stoi(bankName.substr(3, 4));
+            auto status = bankUnpackers_[CR_BANK_ID]->UnpackBank(bankData, totalWords, serialNumber, crateNum);
+            if (status == unpackingStatus::Failure) {
+                //Something went wrong, so clear the collections and return failure
+                bankUnpackers_[CR_BANK_ID]->ClearCollections();
+                return unpackingStatus::Failure;
+            }
+            // Initialize iterations for accessing each of these events separately using the waveform index
+            this->SetIterations<dataProducts::WFD5Waveform>("WFD5WaveformCollection");
         }
+    } else { // if currentIteration_ != -1)
+        // This is not the first time we are processing this event
+        // Increment the iterations
+        currentIteration_++;
     }
-    return UNPACKING_SUCCESS;
+
+    // Now return the status
+    if (currentIteration_ < maxIterations_) {
+       return unpackingStatus::SuccessMore;
+    }
+    else if (currentIteration_ == maxIterations_) {
+        // We have processed all iterations, reset internal state
+        this->ResetIterations();
+        return unpackingStatus::SuccessDone;
+    } else {
+        // Something went wrong to get here
+        this->ResetIterations();
+        return unpackingStatus::Failure;
+    }
+
+    return unpackingStatus::Success;
 }

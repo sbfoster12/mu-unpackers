@@ -16,7 +16,7 @@ NaluATBankUnpacker::NaluATBankUnpacker() :
 
 NaluATBankUnpacker::~NaluATBankUnpacker() {};
 
-int NaluATBankUnpacker::UnpackBank(uint64_t* bankData, unsigned int totalWords, int serialNumber, int crateNum) {
+unpackingStatus NaluATBankUnpacker::UnpackBank(uint64_t* bankData, unsigned int totalWords, int serialNumber, int crateNum) {
 
     // Update the unpackers event and crate numbers
     this->UpdateEventNum(serialNumber);
@@ -27,16 +27,16 @@ int NaluATBankUnpacker::UnpackBank(uint64_t* bankData, unsigned int totalWords, 
 
     auto status = payloadUnpackers_[AT_PAYLOAD_ID]->Unpack(bankData,wordNum);
 
-    if (status == UNPACKING_FAILURE) {
+    if (status == unpackingStatus::Failure) {
         // Something went wrong, so clear the collections and return failure
         this->ClearCollections();
-        return UNPACKING_FAILURE;
+        return unpackingStatus::Failure;
     }
 
-    return UNPACKING_SUCCESS;
+    return unpackingStatus::Success;
 }
 
-int NaluATBankUnpacker::UnpackBank(TMEvent* event, const std::string& bankName) {
+unpackingStatus  NaluATBankUnpacker::UnpackBank(TMEvent* event, const std::string& bankName) {
 
     //Get the bank
     TMBank *bank = event->FindBank(bankName.c_str());
@@ -54,6 +54,6 @@ int NaluATBankUnpacker::UnpackBank(TMEvent* event, const std::string& bankName) 
         return this->UnpackBank(bankData, totalWords, event->serial_number, std::stoi(bank->name.substr(3, 4)));
     } else {
         LoggerHolder::getInstance().InfoLogger <<"  No AT bank in event ID: " <<  event->event_id << " SN: " << event->serial_number << std::endl;
-        return UNPACKING_FAILURE;
+        return unpackingStatus::Failure;
     }
 }

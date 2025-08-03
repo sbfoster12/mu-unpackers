@@ -21,7 +21,7 @@ WFD5CRBankUnpacker::WFD5CRBankUnpacker() :
 
 WFD5CRBankUnpacker::~WFD5CRBankUnpacker() {};
 
-int WFD5CRBankUnpacker::UnpackBank(uint64_t* bankData, unsigned int totalWords, int serialNumber, int crateNum) {
+unpackingStatus WFD5CRBankUnpacker::UnpackBank(uint64_t* bankData, unsigned int totalWords, int serialNumber, int crateNum) {
 
     //Update the unpackers event and crate numbers
     this->UpdateEventNum(serialNumber);
@@ -42,24 +42,24 @@ int WFD5CRBankUnpacker::UnpackBank(uint64_t* bankData, unsigned int totalWords, 
         if (payloadUnpackers_.find(payload_type) != payloadUnpackers_.end()) {
             auto status = payloadUnpackers_[payload_type]->Unpack(bankData,wordNum);
 
-            if (status == UNPACKING_FAILURE) {
+            if (status == unpackingStatus::Failure) {
                 //Something went wrong, so clear the collections and return failure
                 this->ClearCollections();
-                return UNPACKING_FAILURE;
+                return unpackingStatus::Failure;
             }
 
         } else {
             std::cerr << "Error: Payload unpacker with given type was not found.\n"
             << "Location: WFD5CRBankUnpacker::UnpackBank(uint64_t* bankData, unsigned int totalWords, int serialNumber, int crateNum)\n"
             << "Details: the provided payload id was " << payload_type << std::endl;
-            return UNPACKING_FAILURE;
+            return unpackingStatus::Failure;
         }
     }
 
-    return UNPACKING_SUCCESS;
+    return unpackingStatus::Success;
 }
 
-int WFD5CRBankUnpacker::UnpackBank(TMEvent* event, const std::string& bankName) {
+unpackingStatus WFD5CRBankUnpacker::UnpackBank(TMEvent* event, const std::string& bankName) {
 
     //Get the bank
     TMBank *bank = event->FindBank(bankName.c_str());
@@ -76,6 +76,6 @@ int WFD5CRBankUnpacker::UnpackBank(TMEvent* event, const std::string& bankName) 
         return this->UnpackBank(bankData, totalWords, event->serial_number, std::stoi(bank->name.substr(3, 4)));
     } else {
         LoggerHolder::getInstance().InfoLogger <<"  No CR bank in event ID: " <<  event->event_id << " SN: " << event->serial_number << std::endl;
-        return UNPACKING_FAILURE;
+        return unpackingStatus::Failure;
     }
 }

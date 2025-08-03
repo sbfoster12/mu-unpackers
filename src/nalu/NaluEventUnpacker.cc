@@ -17,7 +17,7 @@ NaluEventUnpacker::NaluEventUnpacker()
 
 NaluEventUnpacker::~NaluEventUnpacker() {}
 
-int NaluEventUnpacker::UnpackEvent(TMEvent* event) {
+unpackingStatus NaluEventUnpacker::UnpackEvent(TMEvent* event) {
 
     //Clear previous event
     this->ClearCollections();
@@ -30,27 +30,27 @@ int NaluEventUnpacker::UnpackEvent(TMEvent* event) {
         if (bank.name.substr(0, 2) == "AD") {
             auto status = bankUnpackers_[AD_BANK_ID]->UnpackBank(event, bank.name);
 
-            if (status == UNPACKING_FAILURE) {
+            if (status == unpackingStatus::Failure) {
                 //Something went wrong, so clear the collections and return failure
                 this->ClearCollections();
-                return UNPACKING_FAILURE;
+                return unpackingStatus::Failure;
             }
         } else if (bank.name.substr(0, 2) == "AT") {
             auto status = bankUnpackers_[AT_BANK_ID]->UnpackBank(event, bank.name);
 
-            if (status == UNPACKING_FAILURE) {
+            if (status == unpackingStatus::Failure) {
                 //Something went wrong, so clear the collections and return failure
                 this->ClearCollections();
-                return UNPACKING_FAILURE;
+                return unpackingStatus::Failure;
             }
         }
     }
 
-    return UNPACKING_SUCCESS;
+    return unpackingStatus::Success;
 }
 
 //method to unpack a bank directly instead of the event
-int NaluEventUnpacker::UnpackBank(uint64_t* bank_data, unsigned int total_words, int serial_number, std::string bank_name) {
+unpackingStatus NaluEventUnpacker::UnpackBank(uint64_t* bank_data, unsigned int total_words, int serial_number, std::string bank_name) {
 
     // Figure out which bank ID it is
     int bank_ID = 0;
@@ -67,12 +67,12 @@ int NaluEventUnpacker::UnpackBank(uint64_t* bank_data, unsigned int total_words,
         bankUnpackers_[AD_BANK_ID]->ClearCollections();
         int bank_num = std::stoi(bank_name.substr(3, 4));
         auto status = bankUnpackers_[AD_BANK_ID]->UnpackBank(bank_data, total_words, serial_number, bank_num);
-        if (status == UNPACKING_FAILURE) {
+        if (status == unpackingStatus::Failure) {
             //Something went wrong, so clear the collections and return failure
             bankUnpackers_[AD_BANK_ID]->ClearCollections();
-            return UNPACKING_FAILURE;
+            return unpackingStatus::Failure;
         }
     }
 
-    return UNPACKING_SUCCESS;
+    return unpackingStatus::Success;
 }

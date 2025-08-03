@@ -30,7 +30,7 @@ namespace unpackers {
         //Destructor
         ~WFD5PayloadUnpacker();
 
-        int Unpack(const uint64_t* words, unsigned int& wordNum) override;
+        unpackingStatus Unpack(const uint64_t* words, unsigned int& wordNum) override;
 
         //Methods to unpack channels in sync and async modes
         void UnpackSyncMode(const uint64_t* words, unsigned int& wordNum, int amcSlot);

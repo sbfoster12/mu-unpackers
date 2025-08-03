@@ -25,7 +25,7 @@ namespace unpackers {
         //Destructor
         virtual ~PayloadUnpacker();
 
-        int virtual Unpack(const uint64_t* words, unsigned int& wordNum) = 0;
+        virtual unpackingStatus Unpack(const uint64_t* words, unsigned int& wordNum) = 0;
 
         void SetCrateNum(int crateNum);
         void SetEventNum(int eventNum);
