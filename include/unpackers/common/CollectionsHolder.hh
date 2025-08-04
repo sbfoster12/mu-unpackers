@@ -179,10 +179,10 @@ namespace unpackers {
             std::vector<T> derivedCol;
             
             //Get the collection of base pointers
-            auto colBasePtr = basePtrCols_[collectionName];
+            auto basePtrCol = basePtrCols_[collectionName];
 
             // Loop over base pointers
-            for (const auto& basePtr : *colBasePtr) {
+            for (const auto& basePtr : *basePtrCol) {
                 if (auto derivedPtr = dynamic_cast<T*>(basePtr.get())) {
 
                     // Check if the derived class has an iteration member
@@ -206,6 +206,47 @@ namespace unpackers {
             }
 
             return derivedCol;
+        }
+
+        template <typename T>
+        std::vector<std::shared_ptr<dataProducts::DataProduct>> GetNextPtrCollection(std::string collectionName) {
+
+            // First check if the current iteration is valid
+            if (currentIteration_ >= maxIterations_ || currentIteration_ < 0) {
+                return {};
+            }
+
+            //Create base ptr collection for this iteration
+            std::vector<std::shared_ptr<dataProducts::DataProduct>> thisBasePtrCol;
+
+            //Get the collection of base pointers
+            auto basePtrCol = basePtrCols_[collectionName];
+
+            // Loop over base pointers
+            for (const auto& basePtr : *basePtrCol) {
+                if (auto derivedPtr = dynamic_cast<T*>(basePtr.get())) {
+
+                    // Check if the derived class has an iteration member
+                    if (T::iterMemb) {
+                        int index = derivedPtr->*(T::iterMemb);
+                        int thisIteration = iterationsMap_[index];
+                        
+                        // if this is the correct index
+                        if (thisIteration == currentIteration_) {
+                            thisBasePtrCol.push_back(basePtr);
+                        }
+                    } else {
+                        // If no iteration member, just add the derived pointer (all data products are share across trigger events)
+                        thisBasePtrCol.push_back(basePtr);
+                    }
+                } else { // can't cast
+                    std::cerr << "Collection could not be found with the provided template.\n"
+                        << "Returning false\n";
+                    return {};
+                }
+            }
+
+            return thisBasePtrCol;
         }
 
         void ClearCollections();
