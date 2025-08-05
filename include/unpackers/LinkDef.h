@@ -27,10 +27,12 @@
 #pragma link C++ class unpackers::FC7PayloadUnpacker+;
 
 // Nalu unpackers classes
+#ifdef BUILD_NALU
 #pragma link C++ class unpackers::NaluADBankUnpacker+;
 #pragma link C++ class unpackers::NaluATBankUnpacker+;
 #pragma link C++ class unpackers::NaluADPayloadUnpacker+;
 #pragma link C++ class unpackers::NaluATPayloadUnpacker+;
 #pragma link C++ class unpackers::NaluEventUnpacker+;
+#endif
 
 #endif

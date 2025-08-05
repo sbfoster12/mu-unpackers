@@ -32,18 +32,27 @@ endif()
 # Set the path for where to look for the libraries of the installed target
 set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
 
+# See if we should build the NALU data products
+option(BUILD_NALU "Build the NALU data products" OFF)
+
+if(BUILD_NALU)
+    add_compile_definitions(BUILD_NALU)
+endif()
+
 # Add all the subdirectories
 add_subdirectory(midasio)
 add_subdirectory(src)
 
 # Create the nalu executable
-add_executable(unpack_nalu src/main_nalu.cc)
+if(BUILD_NALU)
+        add_executable(unpack_nalu src/main_nalu.cc)
 
-# Link libraries
-target_link_libraries(unpack_nalu
-    PUBLIC 
-        unpackers 
-)
+        # Link libraries
+        target_link_libraries(unpack_nalu
+        PUBLIC 
+                unpackers 
+        )
+endif()
 
 # Create the wfd5 executable
 add_executable(unpack_wfd5 src/main_wfd5.cc)
@@ -60,15 +69,17 @@ install(TARGETS
         LIBRARY DESTINATION lib
 )
 
-# Install the executables
-install(TARGETS unpack_nalu
-        DESTINATION bin
-)
+if(BUILD_NALU)
+        # Install the executables
+        install(TARGETS unpack_nalu
+                DESTINATION bin
+        )
 
-# Install the executables
-install(TARGETS unpack_wfd5
-        DESTINATION bin
-)
+        # Install the executables
+        install(TARGETS unpack_wfd5
+                DESTINATION bin
+        )
+endif()
 
 # Enable debugging symbols
 # target_compile_options(unpack_wfd5 PRIVATE -g -v)
