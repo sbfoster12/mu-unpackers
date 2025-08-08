@@ -6,7 +6,7 @@ using namespace unpackers;
 
 CollectionsHolder::CollectionsHolder()
     : className_("CollectionsHolder"),
-        currentIteration_(0),
+        currentIteration_(-1),
         maxIterations_(-1)
 {}
 
