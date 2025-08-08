@@ -74,8 +74,8 @@ namespace unpackers {
                 verbosity_(0)
                 {}
 
-            // Private static instance
-            static LoggerHolder instance_;
+            // // Private static instance
+            // static LoggerHolder instance_;
 
             //tree
             int verbosity_;

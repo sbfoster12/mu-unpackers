@@ -42,7 +42,7 @@ unpackingStatus WFD5PayloadUnpacker::Unpack(const uint64_t* words, unsigned int&
 
     //Set the words in the parser
     WFD5HeaderParser_->SetWords(amc_header_words);
-    LoggerHolder::getInstance().DebugLogger << WFD5HeaderParser_->Stream().str();
+    LoggerHolder::getInstance().DebugLogger << WFD5HeaderParser_->Stream().str() << std::endl;
 
     //Get the AMC slot num
     int amcSlot = WFD5HeaderParser_->AMCNo();
@@ -111,7 +111,7 @@ void WFD5PayloadUnpacker::UnpackSyncMode(const uint64_t* words, unsigned int& wo
     //Set the words in the channel parser
     //We won't write the data product yet until we get the trailer
     WFD5ChannelHeaderParser_->SetWords(ch_header_words);
-    LoggerHolder::getInstance().DebugLogger << WFD5ChannelHeaderParser_->Stream().str();
+    LoggerHolder::getInstance().DebugLogger << WFD5ChannelHeaderParser_->Stream().str() << std::endl;
 
     //Get the channel tag
     uint32_t channelTag = WFD5ChannelHeaderParser_->ChannelTag();
@@ -132,7 +132,7 @@ void WFD5PayloadUnpacker::UnpackSyncMode(const uint64_t* words, unsigned int& wo
 
         //Set the words in the parser
         WFD5WaveformHeaderParser_->SetWords(wf_header_words);
-        LoggerHolder::getInstance().DebugLogger << WFD5WaveformHeaderParser_->Stream().str();
+        LoggerHolder::getInstance().DebugLogger << WFD5WaveformHeaderParser_->Stream().str() << std::endl;
 
         //Get the waveform length (number of 8 bit ADC samples = 2 64 bit words)
         uint32_t waveform_length = WFD5WaveformHeaderParser_->WaveformLength();
@@ -155,7 +155,7 @@ void WFD5PayloadUnpacker::UnpackSyncMode(const uint64_t* words, unsigned int& wo
 
         //Set the words in the parser
         WFD5WaveformParser_->SetWords(adc_words);
-        LoggerHolder::getInstance().DebugLogger << WFD5WaveformParser_->Stream().str();
+        LoggerHolder::getInstance().DebugLogger << WFD5WaveformParser_->Stream().str() << std::endl;
 
         //Create the data product
         WFD5WaveformPtrCol_->push_back(std::make_unique<dataProducts::WFD5Waveform>(
@@ -202,7 +202,7 @@ void WFD5PayloadUnpacker::UnpackASyncMode(const uint64_t* words, unsigned int& w
     //Set the words in the channel parser
     //We won't write the data product yet until we get the trailer
     WFD5ChannelHeaderAsyncParser_->SetWords(ch_header_words);
-    LoggerHolder::getInstance().DebugLogger << WFD5ChannelHeaderAsyncParser_->Stream().str();
+    LoggerHolder::getInstance().DebugLogger << WFD5ChannelHeaderAsyncParser_->Stream().str() << std::endl;
 
     //Get the channel tag
     uint32_t channelTag = WFD5ChannelHeaderAsyncParser_->ChannelTag();
@@ -223,7 +223,7 @@ void WFD5PayloadUnpacker::UnpackASyncMode(const uint64_t* words, unsigned int& w
 
         //Set the words in the parser
         WFD5WaveformHeaderAsyncParser_->SetWords(wf_header_words);
-        LoggerHolder::getInstance().DebugLogger << WFD5WaveformHeaderAsyncParser_->Stream().str();
+        LoggerHolder::getInstance().DebugLogger << WFD5WaveformHeaderAsyncParser_->Stream().str() << std::endl;
 
         //Get the waveform length (number of 8 bit ADC samples = 2 64 bit words)
         uint32_t waveform_length = WFD5WaveformHeaderAsyncParser_->WaveformLength();
@@ -249,7 +249,7 @@ void WFD5PayloadUnpacker::UnpackASyncMode(const uint64_t* words, unsigned int& w
 
         //Set the words in the parser
         WFD5WaveformParser_->SetWords(adc_words);
-        LoggerHolder::getInstance().DebugLogger << WFD5WaveformParser_->Stream().str();
+        LoggerHolder::getInstance().DebugLogger << WFD5WaveformParser_->Stream().str()  << std::endl;
 
         //Create the data product
         WFD5WaveformPtrCol_->push_back(std::make_unique<dataProducts::WFD5Waveform>(
