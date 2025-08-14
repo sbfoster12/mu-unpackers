@@ -146,6 +146,13 @@ namespace unpackers {
             maxIterations_ = -1;
             iterationsMap_.clear();
 
+            //Check if the collection exists
+            if (basePtrCols_.find(collectionName) == basePtrCols_.end()) {
+                std::cerr << "Error in CollectionsHolder: Collection with the provided name does not exist.\n"
+                    << "Details: collectionName = " << collectionName << std::endl;
+                return;
+            }
+
             // Get the collection of base pointers
             auto colBasePtr = basePtrCols_[collectionName];
             int iter = 0;

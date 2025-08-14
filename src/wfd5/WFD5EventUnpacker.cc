@@ -44,12 +44,15 @@ unpackingStatus WFD5EventUnpacker::UnpackEvent(TMEvent* event) {
                     this->ClearCollections();
                     return unpackingStatus::Failure;
                 }
-
-                // It is possible that multiple trigger events are in this unpacked midas event
-                // Initialize iterations for accessing each of these events separately using the waveform index
-                this->SetIterations<dataProducts::WFD5Waveform>("WFD5WaveformCollection");
             }
         }
+
+        // It is possible that multiple trigger events are in this unpacked midas event
+        // Initialize iterations for accessing each of these events separately using the waveform index
+        this->SetIterations<dataProducts::WFD5Waveform>("WFD5WaveformCollection");
+        // for (const auto& [index, iteration] : iterationsMap_) {
+        //     std::cout << "Index: " << index << ", Iteration: " << iteration << std::endl;
+        // }
 
     } else { // if currentIteration_ != -1)
         // This is not the first time we are processing this event
