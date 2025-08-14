@@ -33,7 +33,8 @@ endif()
 set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
 
 # See if we should build the NALU data products
-option(BUILD_NALU "Build the NALU data products" OFF)
+option(BUILD_NALU "Build the NALU unpackers" OFF)
+option(BUILD_EXECUTABLE "Build an executable" OFF)
 
 if(BUILD_NALU)
     add_compile_definitions(BUILD_NALU)
@@ -43,36 +44,42 @@ endif()
 add_subdirectory(midasio)
 add_subdirectory(src)
 
-# Create the nalu executable
-if(BUILD_NALU)
-        add_executable(unpack_nalu src/main_nalu.cc)
-
-        # Link libraries
-        target_link_libraries(unpack_nalu
-        PUBLIC 
-                unpackers 
-        )
-endif()
-
-# Create the wfd5 executable
-add_executable(unpack_wfd5 src/main_wfd5.cc)
-
-# Link libraries
-target_link_libraries(unpack_wfd5
-    PUBLIC 
-        unpackers 
-)
-
 # Install the libraries
 install(TARGETS 
         unpackers    
         LIBRARY DESTINATION lib
 )
 
-if(BUILD_NALU)
-        # Install the executables
-        install(TARGETS unpack_nalu
-                DESTINATION bin
+if (BUILD_EXECUTABLE)
+        ########
+        # NALU #
+        ########
+        # Create the nalu executable
+        if(BUILD_NALU)
+                add_executable(unpack_nalu src/main_nalu.cc)
+
+                # Link libraries
+                target_link_libraries(unpack_nalu
+                PUBLIC 
+                        unpackers 
+                )
+
+                # Install the executable
+                install(TARGETS unpack_nalu
+                        DESTINATION bin
+                )
+        endif()
+
+        ########
+        # WFD5 #
+        ########
+        # Create the wfd5 executable
+        add_executable(unpack_wfd5 src/main_wfd5.cc)
+
+        # Link libraries
+        target_link_libraries(unpack_wfd5
+        PUBLIC 
+                unpackers 
         )
 
         # Install the executables
