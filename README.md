@@ -6,6 +6,8 @@ A C++ library to unpack raw midas data.
 
 - [CMake]
 - [ROOT]
+- [ZLIB]
+- [nlohmann_json]
 - [mu-data-products]
 
 ## Cloning the repository
