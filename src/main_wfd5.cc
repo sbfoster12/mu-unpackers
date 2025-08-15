@@ -1,6 +1,6 @@
 /*
 
-Some description...
+This main method provides an example for doing unpacking on nalu data.
 
 */
 
