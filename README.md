@@ -29,6 +29,8 @@ source ./scripts/setenv.sh
 ./scripts/build.sh -o
 ```
 
+Building the library will produce a shared library `libunpackers.dylib` (or `libunpackers.so`) in the `build/lib` directory.
+
 ## Running the application
 
 Building the application will create two executables, one to unpack midas files with WFD5 payloads and the other to unpack midas files with NALU payloads.
